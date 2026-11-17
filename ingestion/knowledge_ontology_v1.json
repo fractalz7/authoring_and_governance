@@ -1,0 +1,533 @@
+{
+  "name": "Humana Knowledge Ontology (illustrative)",
+  "version": "1.0",
+  "status": "Phase 0 — assumed complete. AI proposed a seed from the corpus; SMEs and Legal approved it.",
+  "note": "Made-up, illustrative ontology for a take-home demo. Not an actual Humana artifact.",
+  "classes": {
+    "KnowledgeUnit": {
+      "definition": "The smallest piece of knowledge that is authored, approved, versioned and served on its own. A paragraph, a rule, a verbatim line or a fact.",
+      "fields": [
+        "unit_id",
+        "title",
+        "text",
+        "version",
+        "effective_date"
+      ],
+      "set_by": "AI extracts; author confirms"
+    },
+    "UnitType": {
+      "definition": "What kind of knowledge a unit is. Decides how it may be used downstream.",
+      "values": {
+        "verbatim_legal": "Must be read or shown word for word. Never paraphrased or generated.",
+        "script_step": "Guidance for what to say. May be said in the speaker's own words.",
+        "benefit_fact": "A plan-specific fact such as a copay, limit or supply.",
+        "policy_rule": "A rule that governs coverage or eligibility, such as PA or ST.",
+        "procedure": "A how-to for advocates, such as an escalation or transfer path.",
+        "definition": "Plain-language explanation of a term."
+      },
+      "set_by": "AI decides"
+    },
+    "ComplianceClass": {
+      "definition": "The risk level of a unit. Decides which approval gate it must pass.",
+      "values": {
+        "legal": "Legal or regulatory wording. Human approval by Legal is required.",
+        "clinical": "Clinical content. Human approval by a clinical reviewer is required.",
+        "regulatory_cms": "Content driven by CMS rules. Legal approval required.",
+        "operational": "Internal how-to. Author approval is enough."
+      },
+      "set_by": "AI recommends; author confirms"
+    },
+    "Topic": {
+      "definition": "What the unit is about. A two-level hierarchy.",
+      "values": {
+        "pharmacy": [
+          "formulary",
+          "drug_tiers",
+          "generics",
+          "coverage_rules",
+          "pharmacy_network",
+          "mail_order",
+          "drug_payment_stages",
+          "extra_help",
+          "pricing"
+        ],
+        "insurance": [
+          "premium_billing",
+          "enrollment",
+          "grievances"
+        ],
+        "member_service": [
+          "identity_verification",
+          "call_handling",
+          "contact_info",
+          "privacy_consent",
+          "escalation"
+        ]
+      },
+      "keywords": {
+        "pharmacy.pricing": [
+          "price",
+          "prices",
+          "cost",
+          "costs",
+          "disclaimer"
+        ],
+        "pharmacy.formulary": [
+          "formulary",
+          "drug list",
+          "not on your plan"
+        ],
+        "pharmacy.drug_tiers": [
+          "tier",
+          "tiers",
+          "copay"
+        ],
+        "pharmacy.generics": [
+          "generic",
+          "brand-name",
+          "fda"
+        ],
+        "pharmacy.coverage_rules": [
+          "prior authorization",
+          "step therapy",
+          "quantity limit"
+        ],
+        "pharmacy.pharmacy_network": [
+          "preferred",
+          "network",
+          "retail pharmac",
+          "pharmacy locator"
+        ],
+        "pharmacy.mail_order": [
+          "mail order",
+          "mail-order",
+          "mail pharmacy",
+          "shipping",
+          "delivery",
+          "deliveries"
+        ],
+        "pharmacy.drug_payment_stages": [
+          "deductible",
+          "catastrophic",
+          "coverage gap",
+          "donut hole",
+          "out-of-pocket",
+          "payment stage"
+        ],
+        "pharmacy.extra_help": [
+          "extra help",
+          "low-income",
+          "lis"
+        ],
+        "insurance.premium_billing": [
+          "premium",
+          "billing",
+          "late-premium"
+        ],
+        "insurance.grievances": [
+          "grievance",
+          "complaint"
+        ],
+        "member_service.identity_verification": [
+          "verify",
+          "verification",
+          "date of birth",
+          "member id number"
+        ],
+        "member_service.call_handling": [
+          "recorded",
+          "recording",
+          "monitored",
+          "how can i help",
+          "calling",
+          "a few minutes",
+          "opening",
+          "purpose",
+          "closing",
+          "reason for the call",
+          "thank you for calling"
+        ],
+        "member_service.contact_info": [
+          "back of your member id card",
+          "tty",
+          "711",
+          "8 a.m."
+        ],
+        "member_service.privacy_consent": [
+          "do-not-call",
+          "voicemail",
+          "not a sales call"
+        ],
+        "member_service.escalation": [
+          "transfer",
+          "escalat",
+          "disposition"
+        ]
+      },
+      "set_by": "AI recommends; author confirms",
+      "channel_specific": [
+        "member_service.call_handling",
+        "member_service.escalation",
+        "member_service.privacy_consent"
+      ]
+    },
+    "LexiconTerm": {
+      "definition": "A word, acronym or misspelling people actually use (Humana-speak), mapped to a topic. Expands search queries.",
+      "set_by": "AI proposes from search logs; author confirms"
+    },
+    "SourceDocument": {
+      "definition": "The document a unit was extracted from. Remains the source of record.",
+      "fields": [
+        "doc_id",
+        "title",
+        "version",
+        "owner_team",
+        "effective_date",
+        "legal_approval_id"
+      ],
+      "doc_types": [
+        "call_script",
+        "knowledge_article",
+        "benefit_document",
+        "policy"
+      ],
+      "set_by": "Captured at upload"
+    },
+    "ApprovalRecord": {
+      "definition": "Who approved which version of a unit, when, and under which approval ID.",
+      "fields": [
+        "approver",
+        "approver_role",
+        "approval_id",
+        "approved_at",
+        "decision",
+        "comment"
+      ],
+      "set_by": "Human only"
+    },
+    "LifecycleStatus": {
+      "definition": "Where a unit is in its life. Only published units are searchable or served.",
+      "values": [
+        "draft",
+        "in_review",
+        "approved",
+        "published",
+        "stale",
+        "retired"
+      ],
+      "set_by": "System, from human actions and drift checks"
+    },
+    "KnowledgeBase": {
+      "definition": "A governed collection of units with an owner. The boundary for access control.",
+      "values": [
+        "pharmacy",
+        "insurance",
+        "shared_member_service"
+      ],
+      "set_by": "AI recommends; author confirms"
+    },
+    "Role": {
+      "definition": "A kind of person or system that reads or changes knowledge.",
+      "values": [
+        "pharmacy_advocate",
+        "insurance_advocate",
+        "outreach_advocate",
+        "member_chat",
+        "knowledge_author",
+        "legal_approver"
+      ],
+      "set_by": "Human only (access is granted, never inferred)"
+    },
+    "Channel": {
+      "definition": "Where a unit reaches people.",
+      "values": [
+        "advocate_desktop",
+        "voice_bot",
+        "member_chat",
+        "web",
+        "outbound"
+      ],
+      "set_by": "AI recommends; author confirms"
+    },
+    "LineOfBusiness": {
+      "definition": "The product a unit applies to.",
+      "values": [
+        "MAPD",
+        "PDP",
+        "DSNP",
+        "commercial"
+      ],
+      "set_by": "AI extracts; author confirms"
+    },
+    "PlanYear": {
+      "definition": "The benefit year a unit applies to. Drives expiry and staleness.",
+      "set_by": "AI extracts; author confirms"
+    },
+    "Jurisdiction": {
+      "definition": "State or market a unit applies to, when it is not national.",
+      "set_by": "AI extracts; author confirms"
+    },
+    "UnansweredQuestion": {
+      "definition": "A question that returned no approved unit. Clustered into the author's gap queue.",
+      "fields": [
+        "question_text",
+        "asker_role",
+        "asked_at",
+        "cluster_id",
+        "count"
+      ],
+      "set_by": "System logs; AI clusters"
+    }
+  },
+  "relations": [
+    {
+      "from": "KnowledgeUnit",
+      "rel": "has_type",
+      "to": "UnitType",
+      "set_by": "AI"
+    },
+    {
+      "from": "KnowledgeUnit",
+      "rel": "has_compliance_class",
+      "to": "ComplianceClass",
+      "set_by": "AI recommends"
+    },
+    {
+      "from": "KnowledgeUnit",
+      "rel": "about",
+      "to": "Topic",
+      "set_by": "AI recommends"
+    },
+    {
+      "from": "LexiconTerm",
+      "rel": "synonym_of",
+      "to": "Topic",
+      "set_by": "AI recommends"
+    },
+    {
+      "from": "KnowledgeUnit",
+      "rel": "derived_from",
+      "to": "SourceDocument",
+      "attributes": [
+        "section",
+        "char_span"
+      ],
+      "set_by": "AI"
+    },
+    {
+      "from": "KnowledgeUnit",
+      "rel": "approved_by",
+      "to": "ApprovalRecord",
+      "set_by": "Human only"
+    },
+    {
+      "from": "KnowledgeUnit",
+      "rel": "has_status",
+      "to": "LifecycleStatus",
+      "set_by": "System"
+    },
+    {
+      "from": "KnowledgeUnit",
+      "rel": "belongs_to",
+      "to": "KnowledgeBase",
+      "set_by": "AI recommends"
+    },
+    {
+      "from": "Role",
+      "rel": "can_read",
+      "to": "KnowledgeBase",
+      "set_by": "Human only"
+    },
+    {
+      "from": "KnowledgeUnit",
+      "rel": "served_via",
+      "to": "Channel",
+      "set_by": "AI recommends"
+    },
+    {
+      "from": "KnowledgeUnit",
+      "rel": "applies_to",
+      "to": "LineOfBusiness",
+      "set_by": "AI"
+    },
+    {
+      "from": "KnowledgeUnit",
+      "rel": "applies_to",
+      "to": "PlanYear",
+      "set_by": "AI"
+    },
+    {
+      "from": "KnowledgeUnit",
+      "rel": "applies_to",
+      "to": "Jurisdiction",
+      "set_by": "AI"
+    },
+    {
+      "from": "UnansweredQuestion",
+      "rel": "about",
+      "to": "Topic",
+      "set_by": "AI"
+    },
+    {
+      "from": "UnansweredQuestion",
+      "rel": "proposes",
+      "to": "KnowledgeUnit",
+      "set_by": "AI recommends; human approves"
+    },
+    {
+      "from": "KnowledgeUnit",
+      "rel": "supersedes",
+      "to": "KnowledgeUnit",
+      "set_by": "System on publish"
+    },
+    {
+      "from": "KnowledgeUnit",
+      "rel": "duplicate_of",
+      "to": "KnowledgeUnit",
+      "set_by": "AI"
+    },
+    {
+      "from": "KnowledgeUnit",
+      "rel": "variant_of",
+      "to": "KnowledgeUnit",
+      "set_by": "AI recommends; author confirms"
+    },
+    {
+      "from": "KnowledgeUnit",
+      "rel": "conflicts_with",
+      "to": "KnowledgeUnit",
+      "set_by": "AI flags; human resolves"
+    }
+  ],
+  "access_policy": {
+    "pharmacy_advocate": [
+      "pharmacy",
+      "shared_member_service"
+    ],
+    "insurance_advocate": [
+      "insurance",
+      "shared_member_service"
+    ],
+    "outreach_advocate": [
+      "pharmacy",
+      "insurance",
+      "shared_member_service"
+    ],
+    "member_chat": [
+      "pharmacy",
+      "shared_member_service"
+    ],
+    "rule": "Search filters to published units in the asker's knowledge bases before retrieval."
+  },
+  "approval_policy": {
+    "legal": "legal_approver",
+    "regulatory_cms": "legal_approver",
+    "clinical": "clinical_reviewer",
+    "operational": "knowledge_author"
+  },
+  "lexicon": [
+    {
+      "term": "PA",
+      "expands_to": "prior authorization",
+      "topic": "pharmacy.coverage_rules"
+    },
+    {
+      "term": "prior auth",
+      "expands_to": "prior authorization",
+      "topic": "pharmacy.coverage_rules"
+    },
+    {
+      "term": "ST",
+      "expands_to": "step therapy",
+      "topic": "pharmacy.coverage_rules"
+    },
+    {
+      "term": "QL",
+      "expands_to": "quantity limit",
+      "topic": "pharmacy.coverage_rules"
+    },
+    {
+      "term": "MAPD",
+      "expands_to": "Medicare Advantage Prescription Drug plan",
+      "topic": "line_of_business"
+    },
+    {
+      "term": "PDP",
+      "expands_to": "stand-alone Prescription Drug Plan",
+      "topic": "line_of_business"
+    },
+    {
+      "term": "DSNP",
+      "expands_to": "Dual Eligible Special Needs Plan",
+      "topic": "line_of_business"
+    },
+    {
+      "term": "LIS",
+      "expands_to": "Extra Help (Low-Income Subsidy)",
+      "topic": "pharmacy.extra_help"
+    },
+    {
+      "term": "OOP",
+      "expands_to": "out-of-pocket",
+      "topic": "pharmacy.drug_payment_stages"
+    },
+    {
+      "term": "donut hole",
+      "expands_to": "coverage gap (retired concept)",
+      "topic": "pharmacy.drug_payment_stages",
+      "note": "Retired. Route to the unit explaining it no longer applies."
+    },
+    {
+      "term": "Rx",
+      "expands_to": "prescription",
+      "topic": "pharmacy"
+    },
+    {
+      "term": "formulary",
+      "expands_to": "drug list",
+      "topic": "pharmacy.formulary"
+    },
+    {
+      "term": "mail order",
+      "expands_to": "mail-order pharmacy",
+      "topic": "pharmacy.mail_order"
+    },
+    {
+      "term": "90 day supply",
+      "expands_to": "extended supply",
+      "topic": "pharmacy.mail_order"
+    },
+    {
+      "term": "DNC",
+      "expands_to": "do-not-call request",
+      "topic": "member_service.privacy_consent"
+    },
+    {
+      "term": "SOB",
+      "expands_to": "Summary of Benefits",
+      "topic": "insurance.enrollment"
+    },
+    {
+      "term": "EOC",
+      "expands_to": "Evidence of Coverage",
+      "topic": "insurance.enrollment"
+    },
+    {
+      "term": "ANOC",
+      "expands_to": "Annual Notice of Change",
+      "topic": "insurance.enrollment"
+    },
+    {
+      "term": "perscription",
+      "expands_to": "prescription",
+      "topic": "pharmacy",
+      "note": "Common misspelling"
+    },
+    {
+      "term": "disclaimor",
+      "expands_to": "disclaimer",
+      "topic": "pharmacy.pricing",
+      "note": "Common misspelling"
+    }
+  ]
+}

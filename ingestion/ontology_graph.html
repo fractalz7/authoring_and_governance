@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Knowledge Ontology v1</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  /* Layout: one centered column; wide diagram scrolls on its own; reference tables below. */
+  --bg: #f6f7f5;
+  --surface: #ffffff;
+  --ink: #1d2320;
+  --muted: #5c6661;
+  --line: #c9cfcb;
+  --accent: #2f6b4f;
+  --accent-soft: #e3efe8;
+  --human: #b25e09;
+  --human-soft: #fbeedd;
+  --font-body: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #141816;
+    --surface: #1c211f;
+    --ink: #e4e9e6;
+    --muted: #9aa49f;
+    --line: #3a423e;
+    --accent: #7cc4a0;
+    --accent-soft: #1f3529;
+    --human: #f0a24f;
+    --human-soft: #3a2a17;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #141816;
+  --surface: #1c211f;
+  --ink: #e4e9e6;
+  --muted: #9aa49f;
+  --line: #3a423e;
+  --accent: #7cc4a0;
+  --accent-soft: #1f3529;
+  --human: #f0a24f;
+  --human-soft: #3a2a17;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; }
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 15px;
+  line-height: 1.55;
+}
+main {
+  max-width: 1160px;
+  margin: 0 auto;
+  padding: 32px 20px 64px;
+  display: grid;
+  gap: 32px;
+}
+header { display: grid; gap: 10px; max-width: 72ch; }
+h1 { font-size: 28px; font-weight: 600; margin: 0; text-wrap: balance; letter-spacing: -0.01em; }
+h2 { font-size: 19px; font-weight: 600; margin: 0 0 12px; text-wrap: balance; }
+p { margin: 0; }
+.lede { color: var(--muted); }
+.phase {
+  display: inline-flex; align-items: center; gap: 8px;
+  width: fit-content;
+  font-family: var(--font-mono); font-size: 12px;
+  padding: 4px 10px; border-radius: 4px;
+  background: var(--accent-soft); color: var(--accent);
+  border: 1px solid var(--accent);
+}
+.panel {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 20px;
+}
+figure { margin: 0; display: grid; gap: 12px; }
+.diagram { overflow-x: auto; }
+.diagram svg { display: block; width: 100%; min-width: 860px; height: auto; color: var(--ink); }
+figcaption { color: var(--muted); font-size: 14px; max-width: 80ch; }
+
+/* SVG styling */
+.edge { stroke: var(--line); stroke-width: 1.5; fill: none; }
+.edge.human { stroke: var(--human); stroke-width: 2.5; }
+.edge.system { stroke-dasharray: 5 4; }
+.elabel {
+  font-family: var(--font-body); font-size: 11.5px; fill: var(--muted);
+  paint-order: stroke; stroke: var(--surface); stroke-width: 5px; stroke-linejoin: round;
+}
+.elabel.human { fill: var(--human); font-weight: 500; }
+.node rect { fill: var(--surface); stroke: var(--ink); stroke-width: 1.2; }
+.node text { font-family: var(--font-body); font-size: 13px; font-weight: 500; fill: var(--ink); }
+.node.human rect { fill: var(--human-soft); stroke: var(--human); stroke-width: 2; }
+.node.core rect { fill: var(--accent-soft); stroke: var(--accent); stroke-width: 2.5; }
+.node.core .title { font-size: 16px; font-weight: 600; fill: var(--ink); }
+.node.core .sub { font-size: 11.5px; font-weight: 400; fill: var(--muted); }
+.group { font-family: var(--font-mono); font-size: 10.5px; fill: var(--muted); letter-spacing: 0.08em; }
+
+.legend { display: flex; flex-wrap: wrap; gap: 20px; font-size: 13px; color: var(--muted); }
+.legend span { display: inline-flex; align-items: center; gap: 8px; }
+.swatch { width: 28px; height: 0; border-top: 2px solid var(--line); }
+.swatch.human { border-top: 3px solid var(--human); }
+.swatch.system { border-top: 2px dashed var(--line); }
+.box { width: 14px; height: 14px; border-radius: 3px; border: 2px solid var(--accent); background: var(--accent-soft); }
+.box.human { border-color: var(--human); background: var(--human-soft); }
+
+.table-wrap { overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; font-size: 14px; }
+th, td { text-align: left; vertical-align: top; padding: 9px 12px; border-bottom: 1px solid var(--line); }
+th { font-weight: 600; font-size: 12.5px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.04em; }
+td:first-child { font-family: var(--font-mono); font-size: 13px; white-space: nowrap; }
+code { font-family: var(--font-mono); font-size: 13px; }
+.who { display: inline-block; font-size: 12px; padding: 1px 8px; border-radius: 10px; background: var(--accent-soft); color: var(--accent); white-space: nowrap; }
+.who.human { background: var(--human-soft); color: var(--human); }
+.who.system { background: transparent; border: 1px solid var(--line); color: var(--muted); }
+.two { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 24px; }
+.note { font-size: 13px; color: var(--muted); }
+</style>
+</head>
+<body>
+<main>
+  <header>
+    <span class="phase">Phase 0 · treated as done (black box)</span>
+    <h1>Knowledge Ontology v1</h1>
+    <p class="lede">The shared vocabulary every uploaded document is tagged against. In the demo it already exists: the AI proposed a starting version from the document set, and subject-matter experts and Legal approved it. Illustrative only, built on made-up data.</p>
+  </header>
+
+  <section class="panel">
+    <figure>
+      <div class="diagram">
+        <svg viewBox="0 0 1120 720" role="img" aria-label="Ontology graph. The Knowledge Unit sits at the center. It has a type, a compliance class and a topic; it is derived from a source document, approved by an approval record and has a lifecycle status; it belongs to a knowledge base that roles can read and is served via channels; it applies to a line of business, plan year and jurisdiction. Unanswered questions propose new units. Approval and role access are human-only.">
+          <!-- group labels -->
+          <text class="group" x="40" y="30">CLASSIFICATION</text>
+          <text class="group" x="40" y="300">PROVENANCE &amp; GOVERNANCE</text>
+          <text class="group" x="905" y="160">ACCESS &amp; DELIVERY</text>
+          <text class="group" x="410" y="702">APPLICABILITY</text>
+
+          <!-- edges (drawn first, nodes cover their ends) -->
+          <line class="edge" x1="560" y1="360" x2="160" y2="80"/>
+          <line class="edge" x1="560" y1="360" x2="390" y2="80"/>
+          <line class="edge" x1="560" y1="360" x2="650" y2="80"/>
+          <line class="edge" x1="650" y1="80" x2="910" y2="80"/>
+          <line class="edge" x1="780" y1="220" x2="650" y2="80"/>
+          <line class="edge" x1="780" y1="220" x2="560" y2="360"/>
+          <line class="edge" x1="560" y1="360" x2="150" y2="360"/>
+          <line class="edge human" x1="560" y1="360" x2="150" y2="500"/>
+          <line class="edge system" x1="560" y1="360" x2="250" y2="640"/>
+          <line class="edge" x1="560" y1="360" x2="990" y2="360"/>
+          <line class="edge human" x1="990" y1="220" x2="990" y2="360"/>
+          <line class="edge" x1="560" y1="360" x2="990" y2="500"/>
+          <line class="edge" x1="560" y1="360" x2="490" y2="640"/>
+          <line class="edge" x1="560" y1="360" x2="690" y2="640"/>
+          <line class="edge" x1="560" y1="360" x2="890" y2="640"/>
+
+          <!-- edge labels -->
+          <text class="elabel" x="352" y="220" text-anchor="middle">compliance class</text>
+          <text class="elabel" x="476" y="220" text-anchor="middle">has type</text>
+          <text class="elabel" x="605" y="220" text-anchor="middle">about</text>
+          <text class="elabel" x="780" y="76" text-anchor="middle">synonym of</text>
+          <text class="elabel" x="718" y="150" text-anchor="middle">about</text>
+          <text class="elabel" x="672" y="294" text-anchor="middle">proposes</text>
+          <text class="elabel" x="345" y="356" text-anchor="middle">derived from (section, span)</text>
+          <text class="elabel human" x="342" y="434" text-anchor="middle">approved by</text>
+          <text class="elabel" x="395" y="506" text-anchor="middle">has status</text>
+          <text class="elabel" x="790" y="356" text-anchor="middle">belongs to</text>
+          <text class="elabel human" x="1000" y="294" text-anchor="start">can read</text>
+          <text class="elabel" x="790" y="436" text-anchor="middle">served via</text>
+          <text class="elabel" x="520" y="506" text-anchor="middle">applies to</text>
+          <text class="elabel" x="628" y="506" text-anchor="middle">applies to</text>
+          <text class="elabel" x="735" y="506" text-anchor="middle">applies to</text>
+
+          <!-- nodes -->
+          <g class="node"><rect x="80" y="58" width="160" height="44" rx="6"/><text x="160" y="85" text-anchor="middle">Compliance Class</text></g>
+          <g class="node"><rect x="320" y="58" width="140" height="44" rx="6"/><text x="390" y="85" text-anchor="middle">Unit Type</text></g>
+          <g class="node"><rect x="585" y="58" width="130" height="44" rx="6"/><text x="650" y="85" text-anchor="middle">Topic</text></g>
+          <g class="node"><rect x="840" y="58" width="140" height="44" rx="6"/><text x="910" y="85" text-anchor="middle">Lexicon Term</text></g>
+          <g class="node"><rect x="690" y="198" width="180" height="44" rx="6"/><text x="780" y="225" text-anchor="middle">Unanswered Question</text></g>
+          <g class="node human"><rect x="920" y="198" width="140" height="44" rx="6"/><text x="990" y="225" text-anchor="middle">Role</text></g>
+
+          <g class="node"><rect x="65" y="338" width="170" height="44" rx="6"/><text x="150" y="365" text-anchor="middle">Source Document</text></g>
+          <g class="node human"><rect x="65" y="478" width="170" height="44" rx="6"/><text x="150" y="505" text-anchor="middle">Approval Record</text></g>
+          <g class="node"><rect x="170" y="618" width="160" height="44" rx="6"/><text x="250" y="645" text-anchor="middle">Lifecycle Status</text></g>
+
+          <g class="node core">
+            <rect x="420" y="314" width="280" height="92" rx="8"/>
+            <text class="title" x="560" y="350" text-anchor="middle">Knowledge Unit</text>
+            <text class="sub" x="560" y="372" text-anchor="middle">to other units: supersedes · duplicate of</text>
+            <text class="sub" x="560" y="389" text-anchor="middle">variant of · conflicts with</text>
+          </g>
+
+          <g class="node"><rect x="915" y="338" width="150" height="44" rx="6"/><text x="990" y="365" text-anchor="middle">Knowledge Base</text></g>
+          <g class="node"><rect x="925" y="478" width="130" height="44" rx="6"/><text x="990" y="505" text-anchor="middle">Channel</text></g>
+
+          <g class="node"><rect x="410" y="618" width="160" height="44" rx="6"/><text x="490" y="645" text-anchor="middle">Line of Business</text></g>
+          <g class="node"><rect x="625" y="618" width="130" height="44" rx="6"/><text x="690" y="645" text-anchor="middle">Plan Year</text></g>
+          <g class="node"><rect x="820" y="618" width="140" height="44" rx="6"/><text x="890" y="645" text-anchor="middle">Jurisdiction</text></g>
+        </svg>
+      </div>
+      <div class="legend">
+        <span><i class="box"></i>Core object: everything is tagged on the unit, not the document</span>
+        <span><i class="swatch"></i>AI extracts or recommends, author confirms</span>
+        <span><i class="swatch human"></i><i class="box human"></i>Human only</span>
+        <span><i class="swatch system"></i>Kept by the system</span>
+      </div>
+      <figcaption>The unit, not the document, is what gets tagged, approved, versioned and served. Two links are never set by AI: who approved a unit, and which roles can read a knowledge base. Edges read outward from the Knowledge Unit.</figcaption>
+    </figure>
+  </section>
+
+  <section class="panel">
+    <h2>Definitions</h2>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Class</th><th>Definition</th><th>Example from the test documents</th><th>Set by</th></tr></thead>
+        <tbody>
+          <tr><td>Knowledge Unit</td><td>The smallest piece of knowledge that is authored, approved, versioned and served on its own.</td><td>Pricing disclaimer, RX-EDU-SCRIPT v3.2 §6</td><td><span class="who">AI extracts</span></td></tr>
+          <tr><td>Unit Type</td><td>What kind of knowledge it is. Decides how it may be used: verbatim units are shown word for word, never generated.</td><td><code>verbatim_legal</code>, <code>script_step</code>, <code>benefit_fact</code>, <code>policy_rule</code>, <code>procedure</code>, <code>definition</code></td><td><span class="who">AI decides</span></td></tr>
+          <tr><td>Compliance Class</td><td>Risk level. Decides which approval gate the unit must pass.</td><td><code>legal</code>, <code>clinical</code>, <code>regulatory_cms</code>, <code>operational</code></td><td><span class="who">AI recommends</span></td></tr>
+          <tr><td>Topic</td><td>What the unit is about, in two levels.</td><td>pharmacy › mail_order; insurance › premium_billing</td><td><span class="who">AI recommends</span></td></tr>
+          <tr><td>Lexicon Term</td><td>Words people actually type (Humana-speak, acronyms, misspellings), mapped to a topic to widen search.</td><td>“PA” → prior authorization; “donut hole” → retired concept</td><td><span class="who">AI recommends</span></td></tr>
+          <tr><td>Source Document</td><td>The document a unit came from. Stays the source of record.</td><td>RX-EDU-SCRIPT v3.2, Pharmacy Knowledge Ops</td><td><span class="who system">At upload</span></td></tr>
+          <tr><td>Approval Record</td><td>Who approved which version, when, under which approval ID.</td><td>LGL-2026-118, Legal, 2026-09-12</td><td><span class="who human">Human only</span></td></tr>
+          <tr><td>Lifecycle Status</td><td>Where the unit is in its life. Only published units are searchable or served.</td><td>draft → in review → approved → published → stale → retired</td><td><span class="who system">System</span></td></tr>
+          <tr><td>Knowledge Base</td><td>A governed, owned collection of units. The boundary for access control.</td><td>pharmacy, insurance, shared member service</td><td><span class="who">AI recommends</span></td></tr>
+          <tr><td>Role</td><td>A person or system that reads or changes knowledge. Access is granted, never inferred.</td><td>pharmacy advocate, insurance advocate, member chat, Legal approver</td><td><span class="who human">Human only</span></td></tr>
+          <tr><td>Channel</td><td>Where a unit reaches people.</td><td>advocate desktop, voice bot, member chat, web, outbound</td><td><span class="who">AI recommends</span></td></tr>
+          <tr><td>Line of Business</td><td>The product the unit applies to.</td><td>MAPD, PDP, DSNP</td><td><span class="who">AI extracts</span></td></tr>
+          <tr><td>Plan Year</td><td>The benefit year. Drives expiry and staleness.</td><td>2027 (v3.2) vs 2026 (outreach v1.7)</td><td><span class="who">AI extracts</span></td></tr>
+          <tr><td>Jurisdiction</td><td>State or market, when the unit is not national.</td><td>national (both test docs)</td><td><span class="who">AI extracts</span></td></tr>
+          <tr><td>Unanswered Question</td><td>A question with no approved unit behind it. Grouped into the author's gap queue.</td><td>“does mail order ship to a PO box?”</td><td><span class="who system">System logs</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="two">
+    <div class="panel">
+      <h2>Unit-to-unit relations</h2>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Relation</th><th>Example</th><th>Set by</th></tr></thead>
+          <tbody>
+            <tr><td>supersedes</td><td>Disclaimer v3.2 replaces v3.1</td><td><span class="who system">On publish</span></td></tr>
+            <tr><td>duplicate of</td><td>Identity verification, identical in both scripts</td><td><span class="who">AI decides</span></td></tr>
+            <tr><td>variant of</td><td>Inbound vs outbound opening</td><td><span class="who">AI recommends</span></td></tr>
+            <tr><td>conflicts with</td><td>Mail order: 5–7 vs 7–10 business days</td><td><span class="who human">Human resolves</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="panel">
+      <h2>Access and approval rules</h2>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Role</th><th>Can read</th></tr></thead>
+          <tbody>
+            <tr><td>pharmacy advocate</td><td>pharmacy, shared</td></tr>
+            <tr><td>insurance advocate</td><td>insurance, shared</td></tr>
+            <tr><td>outreach advocate</td><td>pharmacy, insurance, shared</td></tr>
+            <tr><td>member chat</td><td>pharmacy, shared</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="note" style="margin-top:12px">Legal and CMS units are approved by Legal; clinical units by a clinical reviewer; operational units by the author. Search filters to published units in the asker's knowledge bases before retrieval.</p>
+    </div>
+  </section>
+</main>
+</body>
+</html>
