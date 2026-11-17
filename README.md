@@ -7,3 +7,4 @@ Prototype work for a Knowledge & Search platform: authoring, governance and inge
 ## Contents
 
 - [`ingestion/`](ingestion/): author upload → unit extraction → ontology tagging → duplicate and conflict check → routing to Legal or the author. Includes the notebook, test documents, ontology, and supporting docs.
+- [`approvals/`](approvals/): a LangGraph workflow that takes each finding through human approval gates (Legal or author, with a role check), publishes approved changes to Chroma as new units or versions, and keeps an audit trail.
