@@ -310,6 +310,41 @@ td code{font:500 12.5px var(--mono)}
 .two-tables{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
 @media (max-width:820px){.two-tables{grid-template-columns:minmax(0,1fr)}}
 
+
+/* tpm additions */
+.linkbtn{font:inherit;color:var(--focus);background:none;border:0;padding:0;cursor:pointer;text-decoration:underline}
+.sub2{font-size:12.5px;color:var(--ink-2);margin-top:2px}
+.ds{display:inline-block;font:500 11px/1 var(--mono);padding:3px 7px;border-radius:9px;white-space:nowrap}
+.ds.prop{background:var(--auto-tint);color:var(--auto-ink);border:1px solid var(--auto)}
+.ds.open{background:var(--store-tint);color:var(--ink-2);border:1px solid var(--line-strong)}
+.ds.dep{background:var(--pain-tint);color:var(--pain);border:1px solid var(--pain)}
+.ds.done{background:var(--ink);color:var(--bg)}
+.wsgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px}
+.ws{cursor:default;min-height:96px}
+.gantt-wrap{padding:12px 14px}
+.gantt{display:grid;grid-template-columns:200px minmax(560px,1fr);row-gap:6px;column-gap:10px;align-items:center}
+.gl{font-size:13px}
+.gl.head,.gt.head{font:500 11px/1.3 var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--ink-2)}
+.gt{display:grid;grid-template-columns:repeat(18,minmax(0,1fr));height:22px;background-image:linear-gradient(90deg,var(--line) 1px,transparent 1px);background-size:calc(100%/18) 100%}
+.gt.head{height:auto;background:none}
+.gt.head span{text-align:center}
+.gb{display:block;height:16px;border-radius:4px;align-self:center}
+.gb.p1{background:#9DB9D6}
+.gb.p2{background:#C2AEE0}
+.gb.gate{box-shadow:inset 0 0 0 2px var(--ink)}
+.gb.key{display:inline-block;width:22px;height:10px;vertical-align:-1px}
+tr.gate td{background:var(--store-tint)}
+.lv{display:inline-block;font:500 11px/1 var(--mono);padding:3px 7px;border-radius:9px}
+.lv.high{background:var(--pain-tint);color:var(--pain);border:1px solid var(--pain)}
+.lv.medium{background:var(--human-tint);color:var(--human-ink);border:1px dashed var(--human)}
+.lv.low{background:var(--store-tint);color:var(--ink-2)}
+.rc{display:inline-block;min-width:22px;text-align:center;font:600 12px/1 var(--mono);padding:4px 5px;border-radius:4px}
+.rc.r{background:#E7F0FB;color:#24496A}
+.rc.a{background:var(--ink);color:var(--bg)}
+.rc.c{background:var(--human-tint);color:var(--human-ink)}
+.rc.i{background:var(--store-tint);color:var(--ink-2)}
+.rc.x{color:var(--ink-2)}
+
 /* tabs */
 .tabs{position:sticky;top:0;z-index:5;display:flex;gap:2px;overflow-x:auto;margin:28px calc(-1 * max(16px,env(safe-area-inset-left,0px))) 0;padding:8px max(16px,env(safe-area-inset-left,0px)) 0;background:var(--bg);border-bottom:1px solid var(--line-strong);scrollbar-width:thin}
 .tabs [role="tab"]{flex:0 0 auto;font:500 13.5px/1.2 var(--sans);color:var(--ink-2);background:none;border:0;border-bottom:3px solid transparent;padding:10px 12px 9px;cursor:pointer;white-space:nowrap}
@@ -402,6 +437,7 @@ td code{font:500 12.5px var(--mono)}
     <button type="button" role="tab" id="t-ontology" data-tab="ontology" aria-controls="ontology" aria-selected="false" tabindex="-1">Ontology</button>
     <button type="button" role="tab" id="t-poc" data-tab="poc" aria-controls="poc" aria-selected="false" tabindex="-1">Phase 1 proof of concept</button>
     <button type="button" role="tab" id="t-roadmap" data-tab="roadmap" aria-controls="roadmap" aria-selected="false" tabindex="-1">Roadmap</button>
+    <button type="button" role="tab" id="t-plan" data-tab="plan" aria-controls="plan" aria-selected="false" tabindex="-1">Program plan</button>
     <button type="button" role="tab" id="t-arch" data-tab="arch" aria-controls="arch" aria-selected="false" tabindex="-1">Architecture whiteboard</button>
     <button type="button" role="tab" id="t-rai" data-tab="rai" aria-controls="rai" aria-selected="false" tabindex="-1">Responsible AI</button>
     <button type="button" role="tab" id="t-roles" data-tab="roles" aria-controls="roles" aria-selected="false" tabindex="-1">Roles and authorizations</button>
@@ -661,7 +697,7 @@ td code{font:500 12.5px var(--mono)}
   <!-- NEXT PHASES -->
   <section class="sec tabpanel" id="roadmap" role="tabpanel" aria-labelledby="t-roadmap">
     <h2>Phases 2 and 3, then improve as data comes in</h2>
-    <p class="blurb">Start with people deciding and the system proposing; widen automation only where the evaluations show it is safe.</p>
+    <p class="blurb">Start with people deciding and the system proposing; widen automation only where the evaluations show it is safe. For milestones, dependencies, risks and the RACI, see the <button type="button" class="linkbtn" data-open-tab="plan">Program plan →</button></p>
     <ol class="phases">
       <li class="phase now"><span class="tag">Phase 1 · built as a proof of concept</span><h3>Author and govern, one domain</h3><p>Pharmacy (Rx) scripts, where inconsistent legal wording costs most.</p><ul><li>Units extracted and tagged against the ontology</li><li>Duplicate, drift and conflict check</li><li>Human approval gates with a role check</li><li>Versioned publish and an audit log</li></ul></li>
       <li class="phase"><span class="tag">Phase 2</span><h3>Search and drift on governed units</h3><p>Search goes live with the first governed knowledge base, not after a full migration.</p><ul><li>Hybrid search over published units only, scoped by role before retrieval</li><li>Every answer cites its unit; "no approved answer" when it has none</li><li>Unanswered questions land in the author's queue with a proposed unit</li><li>Golden set measured before anyone relies on it</li><li>Revised source documents flag their units stale and propose the fix</li></ul></li>
@@ -678,15 +714,61 @@ td code{font:500 12.5px var(--mono)}
     </div>
   </section>
 
+  <!-- PROGRAM PLAN -->
+  <section class="sec tabpanel" id="plan" role="tabpanel" aria-labelledby="t-plan">
+    <h2>Program plan: delivering Phases 1 and 2</h2>
+    <div class="callout"><b>How the roadmap gets delivered.</b> The Roadmap tab says what ships in each phase and why in that order; this tab says how: milestones with exit criteria, the critical path, dependencies on other teams, risks, and who is responsible for what. Weeks are illustrative, to be re-baselined with the engineering lead's estimates. Built for a small team where people wear several hats.</div>
+
+    <h3 class="bsub" style="margin-top:6px">Timeline</h3>
+    <div class="tablewrap gantt-wrap"><div class="gantt">
+      <div class="gl head">Milestone</div><div class="gt head"><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span><span>7</span><span>8</span><span>9</span><span>10</span><span>11</span><span>12</span><span>13</span><span>14</span><span>15</span><span>16</span><span>17</span><span>18</span></div>
+<div class="gl">M1 · Package and tests</div><div class="gt"><span class="gb p1" style="grid-column:1 / 3"></span></div><div class="gl">M2 · Data layer</div><div class="gt"><span class="gb p1" style="grid-column:2 / 5"></span></div><div class="gl">M3 · API with roles</div><div class="gt"><span class="gb p1" style="grid-column:3 / 7"></span></div><div class="gl">M4 · Legal pilot</div><div class="gt"><span class="gb p1 gate" style="grid-column:5 / 9"></span></div><div class="gl">M5 · Search and golden set</div><div class="gt"><span class="gb p2" style="grid-column:9 / 15"></span></div><div class="gl">M6 · Drift</div><div class="gt"><span class="gb p2" style="grid-column:12 / 17"></span></div><div class="gl">M7 · Advocate pilot</div><div class="gt"><span class="gb p2 gate" style="grid-column:14 / 19"></span></div>
+    </div></div>
+    <p class="note2"><span class="gb p1 key"></span> Phase 1 &nbsp; <span class="gb p2 key"></span> Phase 2 &nbsp; <span class="gb p1 gate key"></span> Release gate. Critical path: M1 → M2 → M3 → M4, then M5 → M7. M6 runs alongside M5 and M7.</p>
+
+    <h3 class="bsub">Milestones and exit criteria</h3>
+    <div class="tablewrap"><table class="pmtab">
+      <tr><th>ID</th><th>Milestone</th><th>Done when</th><th>Workstreams</th><th>Depends on</th><th>Weeks</th></tr>
+<tr><td class="mono">M1</td><td><b>Package and tests</b><div class="sub2">Notebook code moved into a package; planted conflicts are automated tests</div></td><td>All planted conflicts caught; no legal item can skip the human gate (test)</td><td>WS1, WS2</td><td>—</td><td class="mono">1–2</td></tr><tr><td class="mono">M2</td><td><b>Data layer</b><div class="sub2">Postgres, append-only audit table, vectors, durable approval state</div></td><td>Publish and index happen in one transaction; paused reviews survive a restart</td><td>WS1</td><td>D1, D2</td><td class="mono">2–4</td></tr><tr><td class="mono">M3</td><td><b>API with roles</b><div class="sub2">Upload, review queue, decisions; roles from sign-in</div></td><td>Role check enforced on the server; wrong-role decisions refused and logged</td><td>WS1, WS4</td><td>D3, D5, D6 · group-to-role mapping from Identity</td><td class="mono">3–6</td></tr><tr class=gate><td class="mono">M4</td><td><b>Phase 1 gate: Legal pilot</b><div class="sub2">Review screen in use by Legal and authors on the Rx scripts</div></td><td>Turnaround targets met for two weeks; Compliance signs off the audit trail</td><td>WS3, WS5</td><td>D4, D7 · Legal reviewer time</td><td class="mono">5–8</td></tr><tr><td class="mono">M5</td><td><b>Search and golden set</b><div class="sub2">Hybrid search over approved units, citations, declines, gap queue</div></td><td>Golden set thresholds met (right unit, correct citation, correct decline)</td><td>WS2, WS1</td><td>D8 · real search logs for the golden set</td><td class="mono">9–14</td></tr><tr><td class="mono">M6</td><td><b>Drift</b><div class="sub2">Revised documents flag their units stale and propose the fix</div></td><td>Every planted revision is flagged; fixes route to the right approver</td><td>WS2</td><td>M5</td><td class="mono">12–16</td></tr><tr class=gate><td class="mono">M7</td><td><b>Phase 2 gate: advocate pilot</b><div class="sub2">Advocate search and author screens with a pilot group</div></td><td>Response time target met; no certified legal error; gap queue worked weekly</td><td>WS3, WS6</td><td>M5 · pilot advocates from the contact center</td><td class="mono">14–18</td></tr>
+    </table></div>
+
+    <h3 class="bsub">Dependencies on other teams</h3>
+    <div class="tablewrap"><table class="pmtab">
+      <tr><th>Dependency</th><th>From</th><th>Needed by</th><th>How we get ahead of it</th></tr>
+<tr><td><b>Group-to-role mapping</b></td><td>Identity team</td><td class="mono">M3</td><td>Request in week 1; mapping is usually the long pole</td></tr><tr><td><b>Model vendor security review</b></td><td>Security</td><td class="mono">M3</td><td>Start in week 1 with the data-handling summary</td></tr><tr><td><b>Legal reviewer time and turnaround targets</b></td><td>Legal</td><td class="mono">M4</td><td>Agree hours per week before the pilot</td></tr><tr><td><b>Access to real documents (de-identified where needed)</b></td><td>KB owners, Compliance</td><td class="mono">M4</td><td>Pilot on Rx scripts first; synthetic until approved</td></tr><tr><td><b>Real search logs for the golden set</b></td><td>Contact center</td><td class="mono">M5</td><td>Export a de-identified sample during Phase 1</td></tr><tr><td><b>Pilot advocates</b></td><td>Contact center</td><td class="mono">M7</td><td>Name the pilot group at M4</td></tr>
+    </table></div>
+
+    <h3 class="bsub">Risk register</h3>
+    <div class="tablewrap"><table class="pmtab">
+      <tr><th>Risk</th><th>Likelihood</th><th>Impact</th><th>Owner</th><th>Mitigation</th></tr>
+<tr><td><b>Legal review becomes the bottleneck</b></td><td><span class="lv high">High</span></td><td><span class="lv high">High</span></td><td>Legal + TPM</td><td>Turnaround targets (D7); route only true legal items; measure queue age weekly</td></tr><tr><td><b>Role mapping or security review slips</b></td><td><span class="lv medium">Medium</span></td><td><span class="lv high">High</span></td><td>TPM</td><td>Start both in week 1; pilot runs on synthetic data until cleared</td></tr><tr><td><b>Extraction misses unmarked verbatim in real documents</b></td><td><span class="lv medium">Medium</span></td><td><span class="lv high">High</span></td><td>Eng lead</td><td>Add unmarked documents to the test set; Legal samples extractions at M4</td></tr><tr><td><b>Reviewers rubber-stamp AI proposals</b></td><td><span class="lv medium">Medium</span></td><td><span class="lv medium">Medium</span></td><td>Compliance</td><td>Track the override rate; audit a sample each week</td></tr><tr><td><b>Search answers too few questions early</b></td><td><span class="lv high">High</span></td><td><span class="lv medium">Medium</span></td><td>Product hat</td><td>Expected by design; work the gap queue weekly and report coverage</td></tr><tr><td><b>Small team: one person holds too many hats</b></td><td><span class="lv medium">Medium</span></td><td><span class="lv medium">Medium</span></td><td>TPM</td><td>RACI per milestone; decision owner named for every decision</td></tr>
+    </table></div>
+
+    <h3 class="bsub">RACI by milestone</h3>
+    <div class="tablewrap"><table class="pmtab matrix">
+      <tr><th>Milestone</th><th>Lead TPM</th><th>Eng lead</th><th>Developers</th><th>Product hat</th><th>Legal</th><th>Compliance</th><th>Identity and security</th><th>Contact center</th></tr>
+<tr><td>M1 Package and tests</td><td><span class="rc a">A</span></td><td><span class="rc r">R</span></td><td><span class="rc r">R</span></td><td><span class="rc c">C</span></td><td><span class="rc i">I</span></td><td><span class="rc i">I</span></td><td><span class="rc x">—</span></td><td><span class="rc x">—</span></td></tr><tr><td>M2 Data layer</td><td><span class="rc a">A</span></td><td><span class="rc r">R</span></td><td><span class="rc r">R</span></td><td><span class="rc i">I</span></td><td><span class="rc i">I</span></td><td><span class="rc c">C</span></td><td><span class="rc c">C</span></td><td><span class="rc x">—</span></td></tr><tr><td>M3 API with roles</td><td><span class="rc a">A</span></td><td><span class="rc r">R</span></td><td><span class="rc r">R</span></td><td><span class="rc i">I</span></td><td><span class="rc i">I</span></td><td><span class="rc c">C</span></td><td><span class="rc r">R</span></td><td><span class="rc x">—</span></td></tr><tr><td>M4 Legal pilot</td><td><span class="rc a">A</span></td><td><span class="rc c">C</span></td><td><span class="rc r">R</span></td><td><span class="rc r">R</span></td><td><span class="rc r">R</span></td><td><span class="rc c">C</span></td><td><span class="rc i">I</span></td><td><span class="rc i">I</span></td></tr><tr><td>M5 Search and golden set</td><td><span class="rc a">A</span></td><td><span class="rc r">R</span></td><td><span class="rc r">R</span></td><td><span class="rc r">R</span></td><td><span class="rc i">I</span></td><td><span class="rc c">C</span></td><td><span class="rc i">I</span></td><td><span class="rc c">C</span></td></tr><tr><td>M6 Drift</td><td><span class="rc a">A</span></td><td><span class="rc r">R</span></td><td><span class="rc r">R</span></td><td><span class="rc c">C</span></td><td><span class="rc c">C</span></td><td><span class="rc i">I</span></td><td><span class="rc x">—</span></td><td><span class="rc x">—</span></td></tr><tr><td>M7 Advocate pilot</td><td><span class="rc a">A</span></td><td><span class="rc c">C</span></td><td><span class="rc r">R</span></td><td><span class="rc r">R</span></td><td><span class="rc i">I</span></td><td><span class="rc c">C</span></td><td><span class="rc i">I</span></td><td><span class="rc r">R</span></td></tr><tr><td>Release gates (M4, M7)</td><td><span class="rc r">R</span></td><td><span class="rc c">C</span></td><td><span class="rc i">I</span></td><td><span class="rc c">C</span></td><td><span class="rc c">C</span></td><td><span class="rc a">A</span></td><td><span class="rc i">I</span></td><td><span class="rc i">I</span></td></tr>
+    </table></div>
+    <p class="note2"><span class="rc r">R</span> responsible · <span class="rc a">A</span> accountable (one per row) · <span class="rc c">C</span> consulted · <span class="rc i">I</span> informed. Compliance is accountable for the release gates; the TPM runs them. When one person holds two hats, they keep both letters, and the single A still names who decides.</p>
+
+    <h3 class="bsub">Operating cadence</h3>
+    <div class="cards">
+      <div class="card"><span class="pill muted">Weekly</span><h3>Working session</h3><p>Core team: milestone status, decision log, blockers. Thirty minutes.</p></div>
+      <div class="card"><span class="pill muted">Weekly</span><h3>Quality review</h3><p>Golden set and planted-conflict results, review-queue age, override rate.</p></div>
+      <div class="card"><span class="pill muted">Every two weeks</span><h3>Steering</h3><p>Legal, Compliance, contact center and the KB owners: late decisions, dependencies, risks.</p></div>
+      <div class="card"><span class="pill">At each gate</span><h3>Release readiness</h3><p>Exit criteria checked, Compliance sign-off, go or no-go recorded in the decision log.</p></div>
+    </div>
+  </section>
+
   <!-- ARCHITECTURE WHITEBOARD -->
   <section class="sec tabpanel" id="arch" role="tabpanel" aria-labelledby="t-arch" data-sec="arch" data-first="a_api">
     <h2>Architecture whiteboard: Phase 1 as a service</h2>
-    <div class="callout"><b>Suggestions to debate, or to defer to the engineering lead.</b> The yellow notes are product requirements the design must meet. Everything else is one way it could work, drawn to start the conversation, not to settle it. The engineering lead owns the architecture; developers own the build.</div>
+    <div class="callout"><b>Proposed architecture, to co-develop with the engineering lead.</b> Yellow notes are requirements the design must meet. Green notes are open decisions: each has an owner and a milestone it is needed by in the decision log below, and I drive them to closure. In a small team several of these hats sit with the same people; the ownership notes keep decisions clear anyway.</div>
     <div class="legend">
       <span><i class="sw p1"></i>Phase 1: author and govern</span>
       <span><i class="sw p2"></i>Phase 2: search, gaps, drift</span>
       <span><i class="sw req"></i>Product requirement</span>
-      <span><i class="sw opt"></i>Option for the eng lead</span>
+      <span><i class="sw opt"></i>Open decision</span>
       <span class="hint">Select any note for detail</span>
     </div>
     <div class="stage side">
@@ -700,7 +782,7 @@ td code{font:500 12.5px var(--mono)}
           </div>
           <p class="ba">↓ calls only the API</p>
           <div class="brow b2w">
-            <button type="button" class="note opt" data-id="a_shell" aria-pressed="false"><span class="ph">Option</span><span class="nt">Front-end shell</span><span class="ns">Streamlit first? React later?</span></button>
+            <button type="button" class="note opt" data-id="a_shell" aria-pressed="false"><span class="ph">Decision D4</span><span class="nt">Front-end shell</span><span class="ns">Streamlit first? React later?</span></button>
             <button type="button" class="note req" data-id="a_sso" aria-pressed="false"><span class="ph">Requirement</span><span class="nt">Sign-in decides the role</span><span class="ns">Never the request</span></button>
           </div>
           <p class="ba">↓</p>
@@ -708,14 +790,14 @@ td code{font:500 12.5px var(--mono)}
           <p class="ba">↓ thin routes over one package</p>
           <div class="brow b3">
             <button type="button" class="note p1" data-id="a_core" aria-pressed="false"><span class="ph">P1</span><span class="nt">Core package</span><span class="ns">ingest · compare · approvals · audit</span></button>
-            <button type="button" class="note p1" data-id="a_worker" aria-pressed="false"><span class="ph">P1</span><span class="nt">Background jobs</span><span class="ns">Uploads can take minutes</span></button>
+            <button type="button" class="note p1" data-id="a_worker" aria-pressed="false"><span class="ph">P1 · Decision D3</span><span class="nt">Background jobs</span><span class="ns">Uploads can take minutes</span></button>
             <button type="button" class="note p1" data-id="a_llm" aria-pressed="false"><span class="ph">P1</span><span class="nt">Model layer</span><span class="ns">Claude, versioned prompts, fallback</span></button>
           </div>
           <p class="ba">↓</p>
           <div class="brow b3">
             <button type="button" class="note p1" data-id="a_db" aria-pressed="false"><span class="ph">P1</span><span class="nt">Postgres</span><span class="ns">Units, findings, audit table</span></button>
-            <button type="button" class="note opt" data-id="a_vec" aria-pressed="false"><span class="ph">Option</span><span class="nt">Vectors</span><span class="ns">pgvector or a vector database?</span></button>
-            <button type="button" class="note opt" data-id="a_graph" aria-pressed="false"><span class="ph">Option</span><span class="nt">LangGraph state</span><span class="ns">Postgres saver, in-API or hosted?</span></button>
+            <button type="button" class="note opt" data-id="a_vec" aria-pressed="false"><span class="ph">Decision D1</span><span class="nt">Vectors</span><span class="ns">pgvector or a vector database?</span></button>
+            <button type="button" class="note opt" data-id="a_graph" aria-pressed="false"><span class="ph">Decision D2</span><span class="nt">LangGraph state</span><span class="ns">Postgres saver, in-API or hosted?</span></button>
           </div>
           <p class="ba">↺ on every change</p>
           <button type="button" class="note req wide" data-id="a_ci" aria-pressed="false"><span class="ph">Requirement</span><span class="nt">Release gate: golden set and planted conflicts</span><span class="ns">The build fails if a conflict is missed or a legal item skips the human gate</span></button>
@@ -795,37 +877,55 @@ td code{font:500 12.5px var(--mono)}
       </figure>
     </div>
 
-    <div class="three" style="margin-top:22px">
-      <div class="col stickycol req"><h3>Product requirements (non-negotiable)</h3><ul>
-        <li>Roles are enforced on the server, from sign-in</li>
-        <li>Only approved units can be retrieved; verbatim is never generated</li>
-        <li>Publishing a unit and making it searchable succeed together or not at all</li>
-        <li>Every decision lands in an append-only audit trail</li>
-        <li>Live-call answers within a response time agreed with the contact center</li>
-        <li>Golden set and planted conflicts run on every release</li></ul></div>
-      <div class="col stickycol opt"><h3>Open questions for the eng lead</h3><ul>
-        <li>pgvector in Postgres, or a separate vector database?</li>
-        <li>LangGraph inside the API, or its hosted platform?</li>
-        <li>Job queue: built-in background tasks, RQ, or Celery?</li>
-        <li>Streamlit pilot first, or straight to React?</li>
-        <li>Where it runs, and how it fits existing Humana platforms and security review</li></ul></div>
-      <div class="col stickycol own"><h3>Who owns what</h3><ul>
-        <li><b>AI PM:</b> problem, outcomes and metrics, requirements, sequencing, acceptance criteria, golden set, Compliance sign-off, review-queue staffing</li>
-        <li><b>Eng lead:</b> architecture and stack, work breakdown and estimates, security review</li>
-        <li><b>Developers:</b> build, tests, operations</li></ul></div>
+    <h3 class="bsub">Decision log</h3>
+    <p class="note2" style="margin:0 0 10px">Every open choice has one decision owner and the milestone it blocks. Reviewed weekly; a decision late for its milestone goes to the steering meeting.</p>
+    <div class="tablewrap"><table class="pmtab">
+      <tr><th>ID</th><th>Decision and options</th><th>Decision owner</th><th>Needed by</th><th>Status</th></tr>
+<tr><td class="mono">D1</td><td><b>Vectors</b><div class="sub2">pgvector in Postgres · separate vector database</div></td><td>Eng lead</td><td class="mono">M2</td><td><span class="ds prop">Proposed</span><div class="sub2">pgvector (publish and index in one transaction)</div></td></tr><tr><td class="mono">D2</td><td><b>LangGraph state</b><div class="sub2">Postgres saver inside the API · hosted platform</div></td><td>Eng lead</td><td class="mono">M2</td><td><span class="ds prop">Proposed</span><div class="sub2">inside the API</div></td></tr><tr><td class="mono">D3</td><td><b>Job queue</b><div class="sub2">Built-in background tasks · RQ · Celery</div></td><td>Eng lead</td><td class="mono">M3</td><td><span class="ds open">Open</span><div class="sub2"></div></td></tr><tr><td class="mono">D4</td><td><b>Front-end shell</b><div class="sub2">Streamlit pilot · React</div></td><td>Eng lead + product hat</td><td class="mono">M4</td><td><span class="ds prop">Proposed</span><div class="sub2">Streamlit pilot</div></td></tr><tr><td class="mono">D5</td><td><b>Hosting and platform fit</b><div class="sub2">Existing Humana platform · new service</div></td><td>Eng lead + Security</td><td class="mono">M3</td><td><span class="ds open">Open</span><div class="sub2"></div></td></tr><tr><td class="mono">D6</td><td><b>Model vendor route and data handling</b><div class="sub2">Approved model route · what data may be sent</div></td><td>Security + Legal</td><td class="mono">M3</td><td><span class="ds dep">Blocked by dependency</span><div class="sub2">security review</div></td></tr><tr><td class="mono">D7</td><td><b>Approval turnaround targets</b><div class="sub2">Hours or days, by finding type</div></td><td>Legal</td><td class="mono">M4</td><td><span class="ds open">Open</span><div class="sub2"></div></td></tr><tr><td class="mono">D8</td><td><b>Live-call response time</b><div class="sub2">Target agreed with the contact center</div></td><td>Contact center + product hat</td><td class="mono">M5</td><td><span class="ds open">Open</span><div class="sub2"></div></td></tr>
+    </table></div>
+
+    <h3 class="bsub">Workstreams</h3>
+    <div class="wsgrid">
+      <div class="note p1 st ws"><span class="ph">WS1</span><span class="nt">Platform engineering</span><span class="ns">API, data, jobs, CI release gate</span></div>
+      <div class="note p1 st ws"><span class="ph">WS2</span><span class="nt">Data and ML</span><span class="ns">Extraction, tagging, comparison, golden set, evals</span></div>
+      <div class="note p1 st ws"><span class="ph">WS3</span><span class="nt">Front end</span><span class="ns">Review screen, upload, advocate search</span></div>
+      <div class="note req st ws"><span class="ph">WS4</span><span class="nt">Identity and security</span><span class="ns">Roles from sign-in, model vendor review</span></div>
+      <div class="note req st ws"><span class="ph">WS5</span><span class="nt">Legal and Compliance</span><span class="ns">Reviewers, turnaround targets, sign-off</span></div>
+      <div class="note req st ws"><span class="ph">WS6</span><span class="nt">Contact center and channels</span><span class="ns">Pilot users, response time, API adoption</span></div>
+    </div>
+    <p class="note2">Yellow workstreams sit outside the core team: they are dependencies the program has to schedule, not tasks it controls.</p>
+
+    <h3 class="bsub">Who owns what</h3>
+    <div class="three" style="margin-top:0">
+      <div class="col stickycol own" style="transform:rotate(-.3deg)"><h3>Lead TPM</h3><ul>
+        <li>Program plan, milestones and exit criteria</li>
+        <li>Cross-team dependencies and the critical path</li>
+        <li>Decision log, driven to closure</li>
+        <li>Risk register and mitigations</li>
+        <li>Release gates and readiness reviews</li>
+        <li>Stakeholder cadence: Legal, Compliance, contact center, channel teams</li>
+        <li>Co-develops the architecture with the eng lead</li></ul></div>
+      <div class="col stickycol opt"><h3>Engineering lead and developers</h3><ul>
+        <li>Eng lead: architecture and stack decisions, technical design, estimates</li>
+        <li>Developers: build, tests, operations</li>
+        <li>Both: the release gate passes before anything ships</li></ul></div>
+      <div class="col stickycol req"><h3>Product hat, Legal, Compliance</h3><ul>
+        <li>Product hat: problem, priorities, acceptance criteria, golden set content (in a small shop, often the TPM or the KB owner)</li>
+        <li>Legal: approval policy, reviewer staffing, turnaround targets</li>
+        <li>Compliance: thresholds, audit, sign-off at each gate</li></ul></div>
     </div>
 
-    <h3 class="bsub">Suggested build order</h3>
+    <h3 class="bsub">Milestones at a glance</h3>
     <ol class="steps">
-      <li class="note p1 st"><span class="ph">P1 · 1</span>Move notebook code into a package; planted conflicts become tests</li>
-      <li class="note p1 st"><span class="ph">P1 · 2</span>Postgres, audit table, durable LangGraph state</li>
-      <li class="note p1 st"><span class="ph">P1 · 3</span>API: upload, review queue, decisions, roles from sign-in</li>
-      <li class="note p1 st"><span class="ph">P1 · 4</span>Review screen: author and govern work end to end</li>
-      <li class="note p2 st"><span class="ph">P2 · 5</span>Search, gap queue, golden set in CI</li>
-      <li class="note p2 st"><span class="ph">P2 · 6</span>Drift through a revisions endpoint</li>
-      <li class="note p2 st"><span class="ph">P2 · 7</span>Author and advocate screens</li>
+      <li class="note p1 st"><span class="ph">M1</span>Package and tests; planted conflicts pass in CI</li>
+      <li class="note p1 st"><span class="ph">M2</span>Postgres, audit table, durable approval state</li>
+      <li class="note p1 st"><span class="ph">M3</span>API with roles from sign-in</li>
+      <li class="note p1 st"><span class="ph">M4 · Gate</span>Review screen pilot with Legal: Phase 1 done</li>
+      <li class="note p2 st"><span class="ph">M5</span>Search, gap queue, golden set gate</li>
+      <li class="note p2 st"><span class="ph">M6</span>Drift on revisions</li>
+      <li class="note p2 st"><span class="ph">M7 · Gate</span>Advocate pilot: Phase 2 done</li>
     </ol>
-    <p class="note2">The notebooks keep working throughout, as demos that import the same package.</p>
+    <p class="note2">The notebooks keep working throughout, as demos that import the same package. Dates, dependencies, risks and the RACI are on the <button type="button" class="linkbtn" data-open-tab="plan">Program plan tab →</button></p>
   </section>
 
   <!-- RAI -->
@@ -1050,16 +1150,16 @@ td code{font:500 12.5px var(--mono)}
     a_review: e('p1', 'Phase 1 · front end', 'Review screen', 'Where Legal and authors work their queues.', [['What it shows', 'Each paused finding with the side-by-side diff, the reason it was flagged, and the channels the unit reaches. Approve or reject with a note.'], ['Replaces', 'The decide() cell in approvals_book.'], ['Requirement', 'The screen never sends a role; the server takes it from sign-in.'], ['Sketch', 'See the review screen sketch below the board.']]),
     a_upload: e('p1', 'Phase 1 · front end', 'Author upload', 'Where authors bring documents and revisions in.', [['What it shows', 'The header card (author, owner, uploader, time, version, category), the two-sentence summary, the units table and the findings, as in ingestion_book.'], ['Behaviour', 'Upload returns at once with a job; results appear when the background job finishes.'], ['Sketch', 'See the author upload sketch below the board.']]),
     a_search_ui: e('p2', 'Phase 2 · front end and callers', 'Advocate search and channel callers', 'The advocate panel, and the chat, voice and web services that call the same endpoint.', [['What it shows', 'The answer, the unit it cites, its version, or "no approved answer" when there is none.'], ['Requirement', 'Same unit, same version and same citation for the same question in every channel.'], ['Sketch', 'See the advocate search sketch below the board, including the "no approved answer" case.']]),
-    a_shell: e('opt', 'Option for the eng lead', 'Front-end shell', 'One way: a Streamlit pilot first, React once the screens settle.', [['Why Streamlit first', 'Days, not weeks, to put a real review screen in front of Legal and learn what they need.'], ['Why it is low-risk', 'The shell only calls the API, so swapping it later costs nothing on the back end.'], ['Defer to', 'The engineering lead and Humana front-end standards.']]),
+    a_shell: e('opt', 'Open decision D4', 'Front-end shell', 'One way: a Streamlit pilot first, React once the screens settle.', [['Why Streamlit first', 'Days, not weeks, to put a real review screen in front of Legal and learn what they need.'], ['Why it is low-risk', 'The shell only calls the API, so swapping it later costs nothing on the back end.'], ['Decision D4', 'Owner: engineering lead, with whoever holds the product hat. Needed by M4.']]),
     a_sso: e('req', 'Product requirement', 'Sign-in decides the role', 'Who may approve what is enforced on the server.', [['Why', 'In the notebook, decide() trusts the role it is given. In a service, the role comes from the sign-in token (company groups mapped to roles), and the role check runs on the server.'], ['Non-negotiable', 'A client can never claim to be Legal.']]),
     a_api: e('p1', 'Phase 1 and 2 · service', 'API service', 'Thin routes over one package; the OpenAPI spec gives the front end and channel teams a typed client.', [['Phase 1 endpoints', 'POST /documents, GET /jobs/{id}, GET /review-queue, POST /findings/{id}/decision, GET /units/{id}, GET /audit.'], ['Phase 2 endpoints', 'POST /search, GET /gaps, POST /documents/{id}/revisions.'], ['Suggested stack', 'FastAPI, for discussion with the engineering lead.']]),
     a_core: e('p1', 'Phase 1 · core', 'Core package', 'The notebook logic, moved into modules the API and the notebooks both import.', [['Modules', 'ontology, ingest, compare, approvals (the LangGraph graph), store, audit, llm; search and gaps in Phase 2.'], ['Why', 'One implementation; the notebooks stay as demos and the planted conflicts become automated tests.']]),
-    a_worker: e('p1', 'Phase 1 · service', 'Background jobs', 'Uploads that call Claude can take minutes, so they run outside the request.', [['How', 'A job queue with a worker; the UI checks job status or receives live updates.'], ['Option', 'Built-in background tasks for a pilot, RQ or Celery after. Defer to the engineering lead.']]),
+    a_worker: e('p1', 'Phase 1 · service', 'Background jobs', 'Uploads that call Claude can take minutes, so they run outside the request.', [['How', 'A job queue with a worker; the UI checks job status or receives live updates.'], ['Decision D3', 'Built-in background tasks for a pilot, RQ or Celery after. Owner: engineering lead. Needed by M3.']]),
     a_llm: e('p1', 'Phase 1 · core', 'Model layer', 'One place where Claude is called.', [['Controls', 'Versioned prompts, outputs checked against the ontology\'s allowed values, traces of every call, and the offline rules as a fallback.'], ['Requirement', 'Legal verbatim is still routed by rule, whatever the model says.']]),
     a_db: e('p1', 'Phase 1 · data', 'Postgres', 'Documents, units and versions, findings, and the append-only audit table that replaces decisions.txt.', [['Requirement', 'The audit trail is append-only and covers every decision, automatic link and refused attempt.']]),
-    a_vec: e('opt', 'Option for the eng lead', 'Vectors', 'One way: pgvector inside the same Postgres, with two vectors per unit (wording for duplicates and drift, meaning for search).', [['Why one database', 'Publishing a unit and indexing it happen in one transaction, so the store and the search index cannot drift apart.'], ['The alternative', 'A separate vector database scales differently and adds a sync step to get right.'], ['Requirement behind it', 'Publish and searchable succeed together or not at all.']]),
-    a_graph: e('opt', 'Option for the eng lead', 'LangGraph state', 'Paused reviews must survive restarts and can wait days.', [['One way', 'LangGraph\'s Postgres saver, with the graph running inside the API.'], ['The alternative', 'LangGraph\'s hosted platform, which adds its own operations and cost.'], ['In the demo', 'An in-memory saver, which resets on restart.']]),
-    a_ci: e('req', 'Product requirement', 'Release gate', 'Quality is checked automatically before anything ships.', [['What runs', 'The golden set (right unit, correct citation, correct decline) and the planted-conflict cases, against the API.'], ['Fails the build when', 'A planted conflict is missed, or any legal item reaches publish without passing the human gate.'], ['PM owns', 'The golden set and its acceptance thresholds, agreed with Compliance.']]),
+    a_vec: e('opt', 'Open decision D1', 'Vectors', 'One way: pgvector inside the same Postgres, with two vectors per unit (wording for duplicates and drift, meaning for search).', [['Why one database', 'Publishing a unit and indexing it happen in one transaction, so the store and the search index cannot drift apart.'], ['The alternative', 'A separate vector database scales differently and adds a sync step to get right.'], ['Requirement behind it', 'Publish and searchable succeed together or not at all.'], ['Decision D1', 'Owner: engineering lead. Needed by M2.']]),
+    a_graph: e('opt', 'Open decision D2', 'LangGraph state', 'Paused reviews must survive restarts and can wait days.', [['One way', 'LangGraph\'s Postgres saver, with the graph running inside the API.'], ['The alternative', 'LangGraph\'s hosted platform, which adds its own operations and cost.'], ['In the demo', 'An in-memory saver, which resets on restart.'], ['Decision D2', 'Owner: engineering lead. Needed by M2.']]),
+    a_ci: e('req', 'Product requirement', 'Release gate', 'Quality is checked automatically before anything ships.', [['What runs', 'The golden set (right unit, correct citation, correct decline) and the planted-conflict cases, against the API.'], ['Fails the build when', 'A planted conflict is missed, or any legal item reaches publish without passing the human gate.'], ['Owners', 'Thresholds agreed with Compliance; the golden set content comes from whoever holds the product hat; the TPM makes it a release gate.']]),
 
     r_author: e('human', 'Role · in demo', 'Knowledge Ops author', 'Maya Ortiz. Writes and maintains knowledge for her knowledge bases.', [['Can', 'Upload documents and revisions; edit drafts; approve operational units, variants and merges in her own knowledge bases; see her queue.'], ['Cannot', 'Approve legal, CMS or clinical wording; grant access; approve her own legal edits.'], ['In the demo', 'Decides 12 author items; her attempt to approve Legal\'s pricing-disclaimer item is refused.']]),
     r_legal: e('human', 'Role · in demo', 'Legal approver', 'David Reyes. Accountable for what members hear.', [['Can', 'Approve or reject legal and CMS wording, contradictions and stale content; resolve conflicts of authority; withdraw a published unit at once.'], ['Cannot', 'Grant access; approve a unit he authored or edited.'], ['In the demo', 'Decides 7 items: keeps the approved pricing disclaimer and closing, adopts the outreach recording disclosure as v2.']]),
@@ -1395,6 +1495,13 @@ td code{font:500 12.5px var(--mono)}
   });
   obs.observe(panel, {childList: true});
 })();
+
+// ---- links that open another tab ----
+document.addEventListener('click', function (ev) {
+  var b = ev.target.closest('[data-open-tab]'); if (!b) return;
+  window.openTab(b.dataset.openTab);
+  var nav = document.querySelector('.tabs'); window.scrollTo(0, nav.offsetTop);
+});
 </script>
 </body>
 </html>
