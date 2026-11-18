@@ -178,7 +178,20 @@ class Review(TypedDict, total=False):
     log: list
 
 approval_ids = itertools.count(1)
-now = lambda: datetime.now().strftime("%H:%M:%S")
+now = lambda: datetime.now().astimezone().isoformat(timespec="seconds")
+
+# Every decision and refused attempt is appended to decisions.txt as it happens.
+DECISIONS_FILE = Path("decisions.txt")
+COLUMNS = ["timestamp", "unit", "finding", "reviewer", "event", "by", "approval", "effect", "note"]
+if not DECISIONS_FILE.exists():
+    DECISIONS_FILE.write_text(" | ".join(COLUMNS) + "\n")
+with DECISIONS_FILE.open("a") as fh:
+    fh.write(f"# run started {now()} · source {run['meta2']['Document ID']} v{run['meta2']['Version']}\n")
+
+def record(s, event, approval="", effect=""):
+    row = [now(), s["uid"], s["category"], s.get("reviewer") or "AI", event, s.get("by", ""), approval, effect, s.get("note", "")]
+    with DECISIONS_FILE.open("a") as fh:
+        fh.write(" | ".join(str(x).replace("|", "/").replace("\n", " ") for x in row) + "\n")
 
 # ---- knowledge-store changes -------------------------------------------------
 def meta_of(uid):
@@ -226,6 +239,7 @@ def check_role(s) -> Literal["apply", "refuse"]:
     return "apply" if s["role"] == s["reviewer"] and s["decision"] in ("approve", "reject") else "refuse"
 
 def refuse(s):
+    record(s, f"REFUSED ({s['role']} chose {s['decision']})")
     return {"log": s["log"] + [f"{now()}  REFUSED: {s['role']} cannot decide a {s['reviewer']} item; waiting again"]}
 
 def apply(s):
@@ -240,6 +254,7 @@ def apply(s):
         detail = f" ({new_version(m['uid'], u, s, aid)})"
     elif key in [("VARIANT", "approve"), ("NEW_UNIT", "approve"), ("STALE", "reject")]:
         publish_unit(u, s, aid, variant_of=m["uid"] if key[0] == "VARIANT" else ""); detail = f" ({u['uid']})"
+    record(s, s["decision"].upper(), aid, EFFECT[key] + detail)
     return {"effect": EFFECT[key] + detail, "approval_id": aid,
             "log": s["log"] + [f"{now()}  applied: {EFFECT[key]}{detail}"]}
 
@@ -377,6 +392,17 @@ for uid in FINDINGS:
              f"<td>{html.escape(v['effect'])}</td><td>{html.escape(v.get('note', ''))}</td></tr>")
 display(HTML(P.CSS + "<table class='kt'><tr><th>Unit</th><th>Finding</th><th>Decision</th><th>By</th><th>Approval</th>"
              "<th>Effect</th><th>Note</th></tr>" + rows + "</table>"))
+''')
+
+md("""
+**Saved to `decisions.txt`.** One line per event with a full timestamp, appended as each decision lands. Each run adds a header line, so earlier runs stay in the file.
+""")
+
+code(r'''
+print(DECISIONS_FILE.read_text())
+if IN_COLAB:
+    from google.colab import files
+    files.download(str(DECISIONS_FILE))
 ''')
 
 md("""

@@ -11,6 +11,7 @@ Picks up where [`../ingestion`](../ingestion) ends. Each finding from document 2
 | `approvals_book.ipynb` | The demo notebook. Saved with outputs, so it reads without running |
 | `pipeline.py` | The ingestion code as a module, generated from `../ingestion/ingestion_book.ipynb` |
 | `build_approvals.py` | Regenerates `pipeline.py` and the notebook (`python3 build_approvals.py`) |
+| `decisions.txt` | Timestamped decision log from the saved run: one line per decision or refused attempt, appended as it happens |
 
 The test documents and ontology are read from `../ingestion/`.
 
@@ -40,4 +41,4 @@ The test documents and ontology are read from `../ingestion/`.
 
 `pip install chromadb langgraph numpy`, then open the notebook from this folder and run all cells. In Colab, upload the notebook, `pipeline.py`, the two test docs and the ontology JSON (the first cell prompts for missing files).
 
-Decisions are made in a cell with `decide(uid, decision, by, role)`. State is in memory and resets on restart; in production the checkpoints and decision log would go to a database.
+Decisions are made in a cell with `decide(uid, decision, by, role)`. Each one is appended to `decisions.txt` (ISO timestamp, unit, finding, reviewer, event, who, approval ID, effect, note); each run adds a header line, so earlier runs stay in the file. In Colab the notebook also downloads it. Graph state itself is in memory and resets on restart; in production the checkpoints and decision log would go to a database.

@@ -1,0 +1,24 @@
+timestamp | unit | finding | reviewer | event | by | approval | effect | note
+# run started 2026-11-17T19:28:00-05:00 · source PHARM-OUTREACH-SCRIPT v1.7
+2026-11-17T19:28:00-05:00 | PHARM-OUTREACH-SCRIPT§4.V1 | EXACT_DUPLICATE | AI | AUTO | AI (rule) | AUTO | Linked: the approved unit now also cites this document (RX-EDU-SCRIPT§3.V1) | 
+2026-11-17T19:28:00-05:00 | PHARM-OUTREACH-SCRIPT§15.G | EXACT_DUPLICATE | AI | AUTO | AI (rule) | AUTO | Linked: the approved unit now also cites this document (RX-EDU-SCRIPT§14.G) | 
+2026-11-17T19:28:00-05:00 | PHARM-OUTREACH-SCRIPT§7.V1 | LEGAL_WORDING_DIFFERS | Legal | REFUSED (Author chose approve) | Maya Ortiz |  |  | 
+2026-11-17T19:28:00-05:00 | PHARM-OUTREACH-SCRIPT§1.G | VARIANT | Author | APPROVE | Maya Ortiz | APR-0001 | Published as a scoped variant (PHARM-OUTREACH-SCRIPT§1.G) | 
+2026-11-17T19:28:00-05:00 | PHARM-OUTREACH-SCRIPT§2.G | VARIANT | Author | APPROVE | Maya Ortiz | APR-0002 | Published as a scoped variant (PHARM-OUTREACH-SCRIPT§2.G) | 
+2026-11-17T19:28:00-05:00 | PHARM-OUTREACH-SCRIPT§3.V1 | NEW_UNIT | Legal | APPROVE | David Reyes | APR-0003 | Published as a new unit (PHARM-OUTREACH-SCRIPT§3.V1) | 
+2026-11-17T19:28:00-05:00 | PHARM-OUTREACH-SCRIPT§3.G | NEW_UNIT | Author | APPROVE | Maya Ortiz | APR-0004 | Published as a new unit (PHARM-OUTREACH-SCRIPT§3.G) | 
+2026-11-17T19:28:00-05:00 | PHARM-OUTREACH-SCRIPT§4.G | NEW_UNIT | Author | APPROVE | Maya Ortiz | APR-0005 | Published as a new unit (PHARM-OUTREACH-SCRIPT§4.G) | 
+2026-11-17T19:28:00-05:00 | PHARM-OUTREACH-SCRIPT§5.V1 | LEGAL_WORDING_DIFFERS | Legal | APPROVE | David Reyes | APR-0006 | New wording published as v2 for every channel; v1 superseded (RX-EDU-SCRIPT§4.V1@v2) | Adopt 'monitored or recorded' as the standard for all channels.
+2026-11-17T19:28:00-05:00 | PHARM-OUTREACH-SCRIPT§6.G | NEW_UNIT | Author | APPROVE | Maya Ortiz | APR-0007 | Published as a new unit (PHARM-OUTREACH-SCRIPT§6.G) | 
+2026-11-17T19:28:00-05:00 | PHARM-OUTREACH-SCRIPT§7.V1 | LEGAL_WORDING_DIFFERS | Legal | REJECT | David Reyes | — | Approved wording stays live; document sent back to use it | v3.2 wording (LGL-2026-118) stands. Outreach script must use it.
+2026-11-17T19:28:00-05:00 | PHARM-OUTREACH-SCRIPT§7.G | NEW_UNIT | Author | APPROVE | Maya Ortiz | APR-0008 | Published as a new unit (PHARM-OUTREACH-SCRIPT§7.G) | 
+2026-11-17T19:28:00-05:00 | PHARM-OUTREACH-SCRIPT§8.G | VARIANT | Author | APPROVE | Maya Ortiz | APR-0009 | Published as a scoped variant (PHARM-OUTREACH-SCRIPT§8.G) | 
+2026-11-17T19:28:00-05:00 | PHARM-OUTREACH-SCRIPT§9.G | SAME_MEANING | Author | APPROVE | Maya Ortiz | APR-0010 | Merged: the approved unit now also cites this document (RX-EDU-SCRIPT§8.G) | 
+2026-11-17T19:28:00-05:00 | PHARM-OUTREACH-SCRIPT§10.G | CONTRADICTION | Legal | REJECT | David Reyes | — | Approved fact stands; document sent back for correction | 5 to 7 business days and up to a 100-day supply are current.
+2026-11-17T19:28:00-05:00 | PHARM-OUTREACH-SCRIPT§11.G | SAME_MEANING | Author | REJECT | Maya Ortiz | — | Not merged; sent back to author | Not the same meaning: preferred copays do not apply at all network pharmacies. Escalate to Legal.
+2026-11-17T19:28:00-05:00 | PHARM-OUTREACH-SCRIPT§12.G | STALE | Legal | APPROVE | David Reyes | APR-0011 | Confirmed stale: not published; author asked to replace it | 
+2026-11-17T19:28:00-05:00 | PHARM-OUTREACH-SCRIPT§13.G | NEW_UNIT | Author | APPROVE | Maya Ortiz | APR-0012 | Published as a new unit (PHARM-OUTREACH-SCRIPT§13.G) | 
+2026-11-17T19:28:00-05:00 | PHARM-OUTREACH-SCRIPT§14.V1 | NEW_UNIT | Legal | APPROVE | David Reyes | APR-0013 | Published as a new unit (PHARM-OUTREACH-SCRIPT§14.V1) | 
+2026-11-17T19:28:00-05:00 | PHARM-OUTREACH-SCRIPT§14.G | NEW_UNIT | Author | APPROVE | Maya Ortiz | APR-0014 | Published as a new unit (PHARM-OUTREACH-SCRIPT§14.G) | 
+2026-11-17T19:28:00-05:00 | PHARM-OUTREACH-SCRIPT§15.V1 | LEGAL_WORDING_DIFFERS | Legal | REJECT | David Reyes | — | Approved wording stays live; document sent back to use it | Keep the approved closing, including 'local time'.
+2026-11-17T19:28:00-05:00 | PHARM-OUTREACH-SCRIPT§16.G | VARIANT | Author | APPROVE | Maya Ortiz | APR-0015 | Published as a scoped variant (PHARM-OUTREACH-SCRIPT§16.G) | 
