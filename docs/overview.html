@@ -6,7 +6,7 @@
 <title>One Source of Truth for Knowledge</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&family=Caveat:wght@600&display=swap">
 <style>
 /* Layout: one column of sections; interactive sections pair a diagram of pressable boxes with a detail card. Teal = automated, amber dashed = human decision, grey = data store or document. */
 :root{
@@ -196,6 +196,51 @@ td code{font:500 12.5px var(--mono)}
 .g-node:focus{outline:none}
 .g-node:focus-visible rect,.g-node.on rect{stroke:var(--focus);stroke-width:3}
 
+
+/* architecture whiteboard */
+.callout{margin:0 0 18px;padding:12px 16px;border-radius:8px;border:1px dashed var(--ink-2);background:var(--surface);max-width:80ch;font-size:14.5px}
+.sw.p1{background:#E7F0FB;border-color:#3C6E91}
+.sw.p2{background:#EFE9F8;border-color:#7A4FA3}
+.sw.req{background:#FFF4C2;border-color:#B8930C}
+.sw.opt{background:#E6F4EA;border-color:#2F6B4F;border-style:dashed}
+.board{border-radius:12px;padding:16px 16px 20px;border:1px solid var(--line);background-color:var(--surface);background-image:radial-gradient(var(--line-strong) 1px,transparent 1px);background-size:18px 18px}
+.bh{font:600 22px/1 'Caveat',var(--sans);color:var(--ink-2);margin:0 0 10px}
+.ba{text-align:center;font:600 19px/1.2 'Caveat',var(--sans);color:var(--ink-2);margin:8px 0}
+.brow{display:grid;gap:12px}
+.brow.b3{grid-template-columns:repeat(3,minmax(0,1fr))}
+.brow.b2w{grid-template-columns:minmax(0,1.3fr) minmax(0,1fr)}
+.note{font:inherit;text-align:left;cursor:pointer;position:relative;display:flex;flex-direction:column;gap:2px;padding:10px 12px 12px;border-radius:3px;border:1px solid transparent;color:#1d2320;box-shadow:0 1px 2px rgba(0,0,0,.12),0 3px 8px rgba(0,0,0,.06);min-width:0;width:100%}
+.note:nth-child(odd){transform:rotate(-.6deg)}
+.note:nth-child(even){transform:rotate(.5deg)}
+.note.wide{transform:none}
+.note .ph{font:500 10.5px/1 var(--mono);letter-spacing:.06em;text-transform:uppercase;opacity:.75}
+.note .nt{font:600 22px/1.05 'Caveat',var(--sans)}
+.note .ns{font-size:12.5px;line-height:1.35;opacity:.85}
+.note .chips{display:flex;flex-wrap:wrap;gap:5px;margin-top:4px}
+.note .chips i{font:500 11.5px var(--mono);font-style:normal;padding:2px 7px;border-radius:10px;background:rgba(255,255,255,.7);border:1px solid #3C6E91}
+.note .chips i.two{border-color:#7A4FA3;border-style:dashed}
+.note.p1{background:#E7F0FB;border-color:#9DB9D6}
+.note.p2{background:#EFE9F8;border-color:#C2AEE0}
+.note.req{background:#FFF4C2;border-color:#E2C766}
+.note.opt{background:#E6F4EA;border:1px dashed #2F6B4F}
+.note:hover{box-shadow:0 2px 4px rgba(0,0,0,.18),0 6px 14px rgba(0,0,0,.1)}
+.note[aria-pressed="true"]{outline:3px solid var(--focus);outline-offset:2px}
+.panel[data-kind="p1"] .kind{background:#E7F0FB;color:#24496A;border-color:#3C6E91}
+.panel[data-kind="p2"] .kind{background:#EFE9F8;color:#4F2F78;border-color:#7A4FA3}
+.panel[data-kind="req"] .kind{background:#FFF4C2;color:#6B5306;border-color:#B8930C}
+.panel[data-kind="opt"] .kind{background:#E6F4EA;color:#1F4D38;border-color:#2F6B4F;border-style:dashed}
+.stickycol{border-radius:3px;box-shadow:0 1px 2px rgba(0,0,0,.12),0 3px 8px rgba(0,0,0,.06);color:#1d2320}
+.stickycol h3{font:600 23px/1.1 'Caveat',var(--sans);margin:0 0 8px}
+.stickycol.req{background:#FFF4C2;border:1px solid #E2C766;transform:rotate(-.4deg)}
+.stickycol.opt{background:#E6F4EA;border:1px dashed #2F6B4F;transform:rotate(.4deg)}
+.stickycol.own{background:#F3F3EF;border:1px solid #CFCFC6;transform:rotate(-.3deg)}
+.stickycol li{margin:4px 0}
+.bsub{font:600 1.0625rem/1.3 var(--sans);margin:30px 0 10px}
+.steps{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px}
+.steps .st{cursor:default;font-size:13.5px;line-height:1.35;min-height:92px}
+.note2{font-size:13px;color:var(--ink-2);margin:12px 0 0}
+@media (max-width:639px){.brow.b3,.brow.b2w{grid-template-columns:minmax(0,1fr)}}
+
 /* tabs */
 .tabs{position:sticky;top:0;z-index:5;display:flex;gap:2px;overflow-x:auto;margin:28px calc(-1 * max(16px,env(safe-area-inset-left,0px))) 0;padding:8px max(16px,env(safe-area-inset-left,0px)) 0;background:var(--bg);border-bottom:1px solid var(--line-strong);scrollbar-width:thin}
 .tabs [role="tab"]{flex:0 0 auto;font:500 13.5px/1.2 var(--sans);color:var(--ink-2);background:none;border:0;border-bottom:3px solid transparent;padding:10px 12px 9px;cursor:pointer;white-space:nowrap}
@@ -287,6 +332,7 @@ td code{font:500 12.5px var(--mono)}
     <button type="button" role="tab" id="t-ontology" data-tab="ontology" aria-controls="ontology" aria-selected="false" tabindex="-1">Ontology</button>
     <button type="button" role="tab" id="t-poc" data-tab="poc" aria-controls="poc" aria-selected="false" tabindex="-1">Phase 1 proof of concept</button>
     <button type="button" role="tab" id="t-roadmap" data-tab="roadmap" aria-controls="roadmap" aria-selected="false" tabindex="-1">Roadmap</button>
+    <button type="button" role="tab" id="t-arch" data-tab="arch" aria-controls="arch" aria-selected="false" tabindex="-1">Architecture whiteboard</button>
     <button type="button" role="tab" id="t-rai" data-tab="rai" aria-controls="rai" aria-selected="false" tabindex="-1">Responsible AI</button>
     <button type="button" role="tab" id="t-artifacts" data-tab="artifacts" aria-controls="artifacts" aria-selected="false" tabindex="-1">Demo artifacts</button>
   </nav>
@@ -561,6 +607,85 @@ td code{font:500 12.5px var(--mono)}
     </div>
   </section>
 
+  <!-- ARCHITECTURE WHITEBOARD -->
+  <section class="sec tabpanel" id="arch" role="tabpanel" aria-labelledby="t-arch" data-sec="arch" data-first="a_api">
+    <h2>Architecture whiteboard: Phase 1 as a service</h2>
+    <div class="callout"><b>Suggestions to debate, or to defer to the engineering lead.</b> The yellow notes are product requirements the design must meet. Everything else is one way it could work, drawn to start the conversation, not to settle it. The engineering lead owns the architecture; developers own the build.</div>
+    <div class="legend">
+      <span><i class="sw p1"></i>Phase 1: author and govern</span>
+      <span><i class="sw p2"></i>Phase 2: search, gaps, drift</span>
+      <span><i class="sw req"></i>Product requirement</span>
+      <span><i class="sw opt"></i>Option for the eng lead</span>
+      <span class="hint">Select any note for detail</span>
+    </div>
+    <div class="stage side">
+      <div class="diagram">
+        <div class="board">
+          <p class="bh">Who uses it</p>
+          <div class="brow b3">
+            <button type="button" class="note p1" data-id="a_review" aria-pressed="false"><span class="ph">P1</span><span class="nt">Review screen</span><span class="ns">Legal and authors decide</span></button>
+            <button type="button" class="note p1" data-id="a_upload" aria-pressed="false"><span class="ph">P1</span><span class="nt">Author upload</span><span class="ns">Header, units, findings</span></button>
+            <button type="button" class="note p2" data-id="a_search_ui" aria-pressed="false"><span class="ph">P2</span><span class="nt">Advocate search</span><span class="ns">and channel callers</span></button>
+          </div>
+          <p class="ba">↓ calls only the API</p>
+          <div class="brow b2w">
+            <button type="button" class="note opt" data-id="a_shell" aria-pressed="false"><span class="ph">Option</span><span class="nt">Front-end shell</span><span class="ns">Streamlit first? React later?</span></button>
+            <button type="button" class="note req" data-id="a_sso" aria-pressed="false"><span class="ph">Requirement</span><span class="nt">Sign-in decides the role</span><span class="ns">Never the request</span></button>
+          </div>
+          <p class="ba">↓</p>
+          <button type="button" class="note p1 wide" data-id="a_api" aria-pressed="false"><span class="ph">P1 + P2</span><span class="nt">API service</span><span class="chips"><i>upload</i><i>jobs</i><i>review queue</i><i>decision</i><i>units</i><i>audit</i><i class="two">search</i><i class="two">gaps</i><i class="two">revisions</i></span></button>
+          <p class="ba">↓ thin routes over one package</p>
+          <div class="brow b3">
+            <button type="button" class="note p1" data-id="a_core" aria-pressed="false"><span class="ph">P1</span><span class="nt">Core package</span><span class="ns">ingest · compare · approvals · audit</span></button>
+            <button type="button" class="note p1" data-id="a_worker" aria-pressed="false"><span class="ph">P1</span><span class="nt">Background jobs</span><span class="ns">Uploads can take minutes</span></button>
+            <button type="button" class="note p1" data-id="a_llm" aria-pressed="false"><span class="ph">P1</span><span class="nt">Model layer</span><span class="ns">Claude, versioned prompts, fallback</span></button>
+          </div>
+          <p class="ba">↓</p>
+          <div class="brow b3">
+            <button type="button" class="note p1" data-id="a_db" aria-pressed="false"><span class="ph">P1</span><span class="nt">Postgres</span><span class="ns">Units, findings, audit table</span></button>
+            <button type="button" class="note opt" data-id="a_vec" aria-pressed="false"><span class="ph">Option</span><span class="nt">Vectors</span><span class="ns">pgvector or a vector database?</span></button>
+            <button type="button" class="note opt" data-id="a_graph" aria-pressed="false"><span class="ph">Option</span><span class="nt">LangGraph state</span><span class="ns">Postgres saver, in-API or hosted?</span></button>
+          </div>
+          <p class="ba">↺ on every change</p>
+          <button type="button" class="note req wide" data-id="a_ci" aria-pressed="false"><span class="ph">Requirement</span><span class="nt">Release gate: golden set and planted conflicts</span><span class="ns">The build fails if a conflict is missed or a legal item skips the human gate</span></button>
+        </div>
+      </div>
+      <aside class="panel" aria-live="polite"></aside>
+    </div>
+
+    <div class="three" style="margin-top:22px">
+      <div class="col stickycol req"><h3>Product requirements (non-negotiable)</h3><ul>
+        <li>Roles are enforced on the server, from sign-in</li>
+        <li>Only approved units can be retrieved; verbatim is never generated</li>
+        <li>Publishing a unit and making it searchable succeed together or not at all</li>
+        <li>Every decision lands in an append-only audit trail</li>
+        <li>Live-call answers within a response time agreed with the contact center</li>
+        <li>Golden set and planted conflicts run on every release</li></ul></div>
+      <div class="col stickycol opt"><h3>Open questions for the eng lead</h3><ul>
+        <li>pgvector in Postgres, or a separate vector database?</li>
+        <li>LangGraph inside the API, or its hosted platform?</li>
+        <li>Job queue: built-in background tasks, RQ, or Celery?</li>
+        <li>Streamlit pilot first, or straight to React?</li>
+        <li>Where it runs, and how it fits existing Humana platforms and security review</li></ul></div>
+      <div class="col stickycol own"><h3>Who owns what</h3><ul>
+        <li><b>AI PM:</b> problem, outcomes and metrics, requirements, sequencing, acceptance criteria, golden set, Compliance sign-off, review-queue staffing</li>
+        <li><b>Eng lead:</b> architecture and stack, work breakdown and estimates, security review</li>
+        <li><b>Developers:</b> build, tests, operations</li></ul></div>
+    </div>
+
+    <h3 class="bsub">Suggested build order</h3>
+    <ol class="steps">
+      <li class="note p1 st"><span class="ph">P1 · 1</span>Move notebook code into a package; planted conflicts become tests</li>
+      <li class="note p1 st"><span class="ph">P1 · 2</span>Postgres, audit table, durable LangGraph state</li>
+      <li class="note p1 st"><span class="ph">P1 · 3</span>API: upload, review queue, decisions, roles from sign-in</li>
+      <li class="note p1 st"><span class="ph">P1 · 4</span>Review screen: author and govern work end to end</li>
+      <li class="note p2 st"><span class="ph">P2 · 5</span>Search, gap queue, golden set in CI</li>
+      <li class="note p2 st"><span class="ph">P2 · 6</span>Drift through a revisions endpoint</li>
+      <li class="note p2 st"><span class="ph">P2 · 7</span>Author and advocate screens</li>
+    </ol>
+    <p class="note2">The notebooks keep working throughout, as demos that import the same package.</p>
+  </section>
+
   <!-- RAI -->
   <section class="sec tabpanel" id="rai" role="tabpanel" aria-labelledby="t-rai">
     <h2>Responsible AI guardrails</h2>
@@ -660,6 +785,20 @@ td code{font:500 12.5px var(--mono)}
     g6: e('human', 'Ontology · human only', 'SME and Legal review', 'Subject-matter experts and Legal decide what the ontology is.', [['They approve, merge, split or rename', 'Topics, classes, relation types and lexicon entries.'], ['People only', 'Unit types, compliance classes, approval rules and which roles may read which knowledge base. These encode policy and accountability, so they are never inferred.']]),
     g7: e('store', 'Ontology · output', 'Ontology v1', 'A versioned file that the rest of the platform reads.', [['What it drives', 'Unit type decides the approval gate; topic decides the knowledge base; the knowledge base decides who can read it in search; the lexicon expands search queries.'], ['In the demo', 'knowledge_ontology_v1.json, treated as a finished Phase 0 step.']]),
     g8: e('auto', 'Ontology · AI and human', 'Refresh', 'The ontology is re-checked on a schedule and when the content changes.', [['AI', 'Re-clusters new documents and search logs and proposes changes: new topics, new synonyms, topics nobody uses any more.'], ['Human', 'Every change goes through the same review and becomes a new version, so tags can be re-applied consistently.']]),
+
+    a_review: e('p1', 'Phase 1 · front end', 'Review screen', 'Where Legal and authors work their queues.', [['What it shows', 'Each paused finding with the side-by-side diff, the reason it was flagged, and the channels the unit reaches. Approve or reject with a note.'], ['Replaces', 'The decide() cell in approvals_book.'], ['Requirement', 'The screen never sends a role; the server takes it from sign-in.']]),
+    a_upload: e('p1', 'Phase 1 · front end', 'Author upload', 'Where authors bring documents and revisions in.', [['What it shows', 'The header card (author, owner, uploader, time, version, category), the two-sentence summary, the units table and the findings, as in ingestion_book.'], ['Behaviour', 'Upload returns at once with a job; results appear when the background job finishes.']]),
+    a_search_ui: e('p2', 'Phase 2 · front end and callers', 'Advocate search and channel callers', 'The advocate panel, and the chat, voice and web services that call the same endpoint.', [['What it shows', 'The answer, the unit it cites, its version, or "no approved answer" when there is none.'], ['Requirement', 'Same unit, same version and same citation for the same question in every channel.']]),
+    a_shell: e('opt', 'Option for the eng lead', 'Front-end shell', 'One way: a Streamlit pilot first, React once the screens settle.', [['Why Streamlit first', 'Days, not weeks, to put a real review screen in front of Legal and learn what they need.'], ['Why it is low-risk', 'The shell only calls the API, so swapping it later costs nothing on the back end.'], ['Defer to', 'The engineering lead and Humana front-end standards.']]),
+    a_sso: e('req', 'Product requirement', 'Sign-in decides the role', 'Who may approve what is enforced on the server.', [['Why', 'In the notebook, decide() trusts the role it is given. In a service, the role comes from the sign-in token (company groups mapped to roles), and the role check runs on the server.'], ['Non-negotiable', 'A client can never claim to be Legal.']]),
+    a_api: e('p1', 'Phase 1 and 2 · service', 'API service', 'Thin routes over one package; the OpenAPI spec gives the front end and channel teams a typed client.', [['Phase 1 endpoints', 'POST /documents, GET /jobs/{id}, GET /review-queue, POST /findings/{id}/decision, GET /units/{id}, GET /audit.'], ['Phase 2 endpoints', 'POST /search, GET /gaps, POST /documents/{id}/revisions.'], ['Suggested stack', 'FastAPI, for discussion with the engineering lead.']]),
+    a_core: e('p1', 'Phase 1 · core', 'Core package', 'The notebook logic, moved into modules the API and the notebooks both import.', [['Modules', 'ontology, ingest, compare, approvals (the LangGraph graph), store, audit, llm; search and gaps in Phase 2.'], ['Why', 'One implementation; the notebooks stay as demos and the planted conflicts become automated tests.']]),
+    a_worker: e('p1', 'Phase 1 · service', 'Background jobs', 'Uploads that call Claude can take minutes, so they run outside the request.', [['How', 'A job queue with a worker; the UI checks job status or receives live updates.'], ['Option', 'Built-in background tasks for a pilot, RQ or Celery after. Defer to the engineering lead.']]),
+    a_llm: e('p1', 'Phase 1 · core', 'Model layer', 'One place where Claude is called.', [['Controls', 'Versioned prompts, outputs checked against the ontology\'s allowed values, traces of every call, and the offline rules as a fallback.'], ['Requirement', 'Legal verbatim is still routed by rule, whatever the model says.']]),
+    a_db: e('p1', 'Phase 1 · data', 'Postgres', 'Documents, units and versions, findings, and the append-only audit table that replaces decisions.txt.', [['Requirement', 'The audit trail is append-only and covers every decision, automatic link and refused attempt.']]),
+    a_vec: e('opt', 'Option for the eng lead', 'Vectors', 'One way: pgvector inside the same Postgres, with two vectors per unit (wording for duplicates and drift, meaning for search).', [['Why one database', 'Publishing a unit and indexing it happen in one transaction, so the store and the search index cannot drift apart.'], ['The alternative', 'A separate vector database scales differently and adds a sync step to get right.'], ['Requirement behind it', 'Publish and searchable succeed together or not at all.']]),
+    a_graph: e('opt', 'Option for the eng lead', 'LangGraph state', 'Paused reviews must survive restarts and can wait days.', [['One way', 'LangGraph\'s Postgres saver, with the graph running inside the API.'], ['The alternative', 'LangGraph\'s hosted platform, which adds its own operations and cost.'], ['In the demo', 'An in-memory saver, which resets on restart.']]),
+    a_ci: e('req', 'Product requirement', 'Release gate', 'Quality is checked automatically before anything ships.', [['What runs', 'The golden set (right unit, correct citation, correct decline) and the planted-conflict cases, against the API.'], ['Fails the build when', 'A planted conflict is missed, or any legal item reaches publish without passing the human gate.'], ['PM owns', 'The golden set and its acceptance thresholds, agreed with Compliance.']]),
     // journey: today
     j1: e('pain', 'Today · step 1', 'Change arrives by email', 'Legal revises the Rx pricing disclaimer and sends a redline.', [['Pain', 'The change goes to people, not to the content. Nothing records which scripts, articles or bots carry that wording.'], ['Who feels it', 'Maya, who now has to work out the blast radius by hand.']]),
     j2: e('pain', 'Today · step 2', 'Search by memory', 'Maya keyword-searches and relies on what she remembers.', [['Pain', 'Near-copies with slightly different wording do not match the search, so they are missed.'], ['Risk', 'The copy nobody knew about keeps the old wording live.']]),
