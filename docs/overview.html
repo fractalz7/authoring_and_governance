@@ -1,0 +1,964 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>One Source of Truth for Knowledge</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+/* Layout: one column of sections; interactive sections pair a diagram of pressable boxes with a detail card. Teal = automated, amber dashed = human decision, grey = data store or document. */
+:root{
+  --bg:#F4F6F8; --surface:#FFFFFF; --ink:#14202E; --ink-2:#4B5968;
+  --line:#D7DEE5; --line-strong:#AEB9C5;
+  --auto:#0E6B66; --auto-ink:#0A524E; --auto-tint:#E2F1EF;
+  --human:#A15208; --human-ink:#7F3F05; --human-tint:#FBEBD6;
+  --pain:#B42318; --pain-tint:#FDECEA;
+  --store-tint:#ECF0F4; --focus:#2457D6;
+  --sans:'IBM Plex Sans',system-ui,-apple-system,'Segoe UI',sans-serif;
+  --mono:'IBM Plex Mono',ui-monospace,SFMono-Regular,Menlo,monospace;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0D141C; --surface:#141D27; --ink:#E7EDF3; --ink-2:#9DABBA;
+    --line:#283544; --line-strong:#41505F;
+    --auto:#52C4BB; --auto-ink:#7FDAD2; --auto-tint:#123230;
+    --human:#EFA65C; --human-ink:#F4BE86; --human-tint:#38260F;
+    --pain:#F28B82; --pain-tint:#3A1A18;
+    --store-tint:#1A2531; --focus:#7FA6FF; color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0D141C; --surface:#141D27; --ink:#E7EDF3; --ink-2:#9DABBA;
+  --line:#283544; --line-strong:#41505F;
+  --auto:#52C4BB; --auto-ink:#7FDAD2; --auto-tint:#123230;
+  --human:#EFA65C; --human-ink:#F4BE86; --human-tint:#38260F;
+  --pain:#F28B82; --pain-tint:#3A1A18;
+  --store-tint:#1A2531; --focus:#7FA6FF; color-scheme:dark;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+html{scroll-behavior:smooth}
+@media (prefers-reduced-motion: reduce){html{scroll-behavior:auto}}
+body{background:var(--bg);color:var(--ink);font:400 15px/1.6 var(--sans);-webkit-text-size-adjust:100%}
+.wrap{max-width:1120px;margin:0 auto;padding:40px max(16px,env(safe-area-inset-left,0px)) 64px}
+a{color:var(--ink)}
+a:focus-visible,button:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+
+.eyebrow,.tag,.lane-h,.kind{font-family:var(--mono);font-weight:500;letter-spacing:.07em;text-transform:uppercase}
+.eyebrow{font-size:12px;color:var(--ink-2)}
+h1{font:600 clamp(1.7rem,1.1rem + 2.4vw,2.6rem)/1.15 var(--sans);letter-spacing:-.015em;margin:12px 0 16px;max-width:22em;text-wrap:balance}
+.lede{font-size:1.0625rem;color:var(--ink-2);max-width:68ch;margin:0}
+.trade{margin:24px 0 0;padding:14px 16px;border:1px solid var(--line-strong);border-radius:8px;background:var(--surface);max-width:72ch}
+.trade .tag{display:block;margin-bottom:4px}
+.trade p{margin:0;font-size:14.5px}
+.jump{display:flex;flex-wrap:wrap;gap:8px 22px;margin:28px 0 0;padding:0;list-style:none;font:500 13px/1.4 var(--mono)}
+.jump a{text-decoration:none;border-bottom:1px solid var(--line-strong);padding-bottom:2px}
+.jump a:hover{border-color:var(--ink)}
+
+.tag{font-size:11px;line-height:1.2;color:var(--ink-2)}
+.sec{scroll-margin-top:64px}
+.sec h2{font:600 1.375rem/1.25 var(--sans);margin:0 0 8px;letter-spacing:-.005em;text-wrap:balance}
+.blurb{margin:0 0 20px;color:var(--ink-2);max-width:72ch}
+.legend{display:flex;flex-wrap:wrap;gap:6px 18px;align-items:center;margin:0 0 14px;font-size:12.5px;color:var(--ink-2)}
+.sw{display:inline-block;width:14px;height:14px;border-radius:3px;border:1px solid var(--line-strong);vertical-align:-2px;margin-right:6px}
+.sw.auto{background:var(--auto-tint);border-color:var(--auto)}
+.sw.human{background:var(--human-tint);border-color:var(--human);border-style:dashed}
+.sw.store{background:var(--store-tint)}
+.sw.pain{background:var(--pain-tint);border-color:var(--pain)}
+.hint{margin-left:auto;font:400 12px var(--mono)}
+
+.stage{display:grid;gap:20px}
+.diagram{display:flex;flex-direction:column;min-width:0}
+@media (min-width:1100px){
+  .stage.side{grid-template-columns:minmax(0,1.55fr) minmax(320px,1fr);align-items:start;gap:28px}
+  .stage.side .panel{position:sticky;top:16px;min-height:320px}
+}
+.lane{border:1px solid var(--line);border-radius:10px;background:var(--surface);padding:12px 14px 14px}
+.lane-h{font-size:11px;line-height:1.3;color:var(--ink-2);margin:0 0 10px}
+.row{display:grid;gap:6px;align-items:stretch}
+.row.r4{grid-template-columns:minmax(0,1fr) 20px minmax(0,1fr) 20px minmax(0,1fr) 20px minmax(0,1fr)}
+.row.r3{grid-template-columns:minmax(0,1fr) 20px minmax(0,1fr) 20px minmax(0,1fr)}
+.row.c3{grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.arr{display:grid;place-items:center;color:var(--ink-2);font:500 16px/1 var(--mono)}
+.link{margin:8px 0;text-align:center;font:500 12px/1.4 var(--mono);color:var(--ink-2)}
+
+.node{font:inherit;color:inherit;text-align:left;cursor:pointer;width:100%;min-width:0;position:relative;display:flex;flex-direction:column;gap:3px;padding:10px 11px 11px;background:var(--bg);border:1px solid var(--line-strong);border-radius:6px}
+.node:hover{border-color:var(--ink-2)}
+.node .name{font-weight:600;font-size:14.5px;line-height:1.3}
+.node .sub{font-size:12.5px;line-height:1.4;color:var(--ink-2)}
+.node.auto{background:var(--auto-tint);border-color:var(--auto)}
+.node.auto .tag{color:var(--auto-ink)}
+.node.human{background:var(--human-tint);border-color:var(--human);border-style:dashed}
+.node.human .tag{color:var(--human-ink)}
+.node.store{background:var(--store-tint)}
+.node.pain{background:var(--pain-tint);border-color:var(--pain)}
+.node.pain .tag{color:var(--pain)}
+.node.split{background:linear-gradient(90deg,var(--auto-tint) 50%,var(--human-tint) 50%);border-color:var(--ink-2)}
+.node[aria-pressed="true"]{outline:2px solid var(--ink);outline-offset:2px}
+
+.panel{background:var(--surface);border:1px solid var(--line-strong);border-radius:10px;padding:20px 22px 22px;min-width:0}
+.kind{display:inline-block;font-size:11px;line-height:1;padding:5px 8px;border:1px solid var(--line-strong);border-radius:4px;color:var(--ink-2)}
+.panel[data-kind="auto"] .kind{border-color:var(--auto);color:var(--auto-ink);background:var(--auto-tint)}
+.panel[data-kind="human"] .kind{border-color:var(--human);color:var(--human-ink);background:var(--human-tint);border-style:dashed}
+.panel[data-kind="store"] .kind{background:var(--store-tint)}
+.panel[data-kind="pain"] .kind{border-color:var(--pain);color:var(--pain);background:var(--pain-tint)}
+.zoom .kind[data-k="pain"]{border-color:var(--pain);color:var(--pain);background:var(--pain-tint)}
+.zoom .kind[data-k="auto"]{border-color:var(--auto);color:var(--auto-ink);background:var(--auto-tint)}
+.zoom .kind[data-k="human"]{border-color:var(--human);color:var(--human-ink);background:var(--human-tint);border-style:dashed}
+.zoom .kind[data-k="store"]{background:var(--store-tint)}
+.panel h3{font:600 1.25rem/1.3 var(--sans);margin:14px 0 6px}
+.panel .lead{margin:0 0 12px;font-weight:500}
+.field{margin-top:14px}
+.field h4{font:500 11px/1.3 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--ink-2);margin:0 0 3px}
+.field p{margin:0;font-size:14.5px}
+
+/* product cards */
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:16px}
+.card.focus{border:2px solid var(--human)}
+.card h3{font:600 1.0625rem/1.3 var(--sans);margin:4px 0 6px}
+.card p{margin:0;font-size:14px;color:var(--ink-2)}
+.card ul{margin:8px 0 0;padding-left:18px;font-size:14px}
+.card li{margin:2px 0}
+.pill{display:inline-block;font:500 11px/1 var(--mono);letter-spacing:.06em;text-transform:uppercase;padding:4px 7px;border-radius:4px;background:var(--human-tint);color:var(--human-ink);border:1px dashed var(--human)}
+.pill.muted{background:var(--store-tint);color:var(--ink-2);border:1px solid var(--line-strong)}
+
+/* journey */
+.toolbar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:0 0 14px;font-size:13px;color:var(--ink-2)}
+.toggle{font:500 13px var(--sans);padding:8px 14px;border:1px solid var(--ink-2);border-radius:6px;background:var(--surface);color:var(--ink);cursor:pointer}
+.toggle[aria-pressed="true"]{background:var(--ink);color:var(--bg)}
+.journey{overflow-x:auto}
+.jgrid{display:grid;grid-template-columns:110px repeat(7,minmax(118px,1fr));gap:6px;min-width:940px}
+.rowlabel{font:500 11px/1.3 var(--mono);letter-spacing:.07em;text-transform:uppercase;color:var(--ink-2);align-self:center}
+.stagehead{font:600 13px/1.3 var(--sans);text-align:center;padding:6px 4px;border-bottom:2px solid var(--line-strong)}
+.stagehead span{display:block;font:500 11px var(--mono);color:var(--ink-2)}
+.jgrid .node{min-height:96px}
+.fgrid{display:grid;grid-template-columns:110px repeat(4,minmax(150px,1fr));gap:6px;min-width:740px;margin-top:22px}
+
+/* phases */
+.phases{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;list-style:none;margin:0;padding:0}
+.phase{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:16px}
+.phase.now{border:2px solid var(--auto)}
+.phase h3{font:600 1.0625rem/1.3 var(--sans);margin:4px 0 6px}
+.phase p{margin:0 0 8px;font-size:14px;color:var(--ink-2)}
+.phase ul{margin:0;padding-left:18px;font-size:14px}
+.phase li{margin:3px 0}
+.loop{margin-top:16px;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:16px}
+.loop h3{font:600 1.0625rem/1.3 var(--sans);margin:0 0 10px}
+.loopgrid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+.loopgrid div{border:1px solid var(--line-strong);border-radius:8px;padding:10px 12px;background:var(--bg);font-size:13.5px}
+.loopgrid b{display:block;font-size:14px;margin-bottom:2px}
+
+/* tables */
+.tablewrap{overflow-x:auto;background:var(--surface);border:1px solid var(--line);border-radius:10px}
+table{border-collapse:collapse;width:100%;font-size:14px}
+th,td{text-align:left;vertical-align:top;padding:10px 14px;border-bottom:1px solid var(--line)}
+tr:last-child td{border-bottom:0}
+th{font:500 11px/1.3 var(--mono);letter-spacing:.07em;text-transform:uppercase;color:var(--ink-2)}
+td code{font:500 12.5px var(--mono)}
+.three{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-top:14px}
+.col{border-radius:10px;padding:14px 16px;border:1px solid var(--line-strong);background:var(--surface)}
+.col.auto{background:var(--auto-tint);border-color:var(--auto)}
+.col.rec{background:var(--surface)}
+.col.human{background:var(--human-tint);border:1px dashed var(--human)}
+.col h3{font:600 15px/1.3 var(--sans);margin:0 0 6px}
+.col ul{margin:0;padding-left:18px;font-size:13.5px}
+.stats{display:flex;flex-wrap:wrap;gap:10px;margin:0 0 16px}
+.stat{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:10px 14px;min-width:120px}
+.stat b{display:block;font:600 22px/1.2 var(--sans);font-variant-numeric:tabular-nums}
+.stat span{font-size:12.5px;color:var(--ink-2)}
+.foot{margin-top:56px;font:400 12px/1.5 var(--mono);color:var(--ink-2)}
+
+
+
+
+/* ontology graph */
+.graphbox{padding:8px;overflow-x:auto}
+#ograph svg{display:block;width:100%;min-width:760px;height:auto}
+.g-edge{stroke:var(--line-strong);stroke-width:1.5}
+.g-edge.human{stroke:var(--human);stroke-width:2.4}
+.g-edge.conflict{stroke:var(--pain);stroke-width:2.4;stroke-dasharray:6 4}
+.g-edge.none{stroke:var(--pain);stroke-dasharray:3 4}
+.g-elabel{font:400 11.5px var(--sans);fill:var(--ink-2);paint-order:stroke;stroke:var(--surface);stroke-width:5px;stroke-linejoin:round}
+.g-elabel.human{fill:var(--human-ink);font-weight:500}
+.g-elabel.conflict,.g-elabel.none{fill:var(--pain);font-weight:500}
+.g-node{cursor:pointer}
+.g-node rect{fill:var(--store-tint);stroke:var(--line-strong);stroke-width:1.2}
+.g-node text{font:600 12.5px var(--sans);fill:var(--ink)}
+.g-node text.s{font:400 11px var(--mono);fill:var(--ink-2)}
+.g-node.core rect{fill:var(--auto-tint);stroke:var(--auto);stroke-width:2.5}
+.g-node.human rect{fill:var(--human-tint);stroke:var(--human);stroke-width:1.8;stroke-dasharray:5 3}
+.g-node.conflict rect{fill:var(--pain-tint);stroke:var(--pain);stroke-width:1.8}
+.g-node:hover rect{stroke:var(--ink)}
+.g-node:focus{outline:none}
+.g-node:focus-visible rect,.g-node.on rect{stroke:var(--focus);stroke-width:3}
+
+/* tabs */
+.tabs{position:sticky;top:0;z-index:5;display:flex;gap:2px;overflow-x:auto;margin:28px calc(-1 * max(16px,env(safe-area-inset-left,0px))) 0;padding:8px max(16px,env(safe-area-inset-left,0px)) 0;background:var(--bg);border-bottom:1px solid var(--line-strong);scrollbar-width:thin}
+.tabs [role="tab"]{flex:0 0 auto;font:500 13.5px/1.2 var(--sans);color:var(--ink-2);background:none;border:0;border-bottom:3px solid transparent;padding:10px 12px 9px;cursor:pointer;white-space:nowrap}
+.tabs [role="tab"]:hover{color:var(--ink)}
+.tabs [role="tab"][aria-selected="true"]{color:var(--ink);border-bottom-color:var(--ink)}
+.tabpanel{margin-top:28px}
+.tabpanel[hidden]{display:none}
+.cfstage .cf-col{min-width:0}
+@media (min-width:1100px){.cfstage.side .zoom{position:sticky;top:64px}}
+.cfstage .zgrid{grid-template-columns:minmax(0,1fr);gap:12px}
+.cfstage .inside .step{flex:1 1 100%}
+.cfstage .inside .to{width:100%;text-align:center;line-height:1}
+.cfstage .inside .to::before{content:"↓"}
+.cfstage .inside .to{font-size:0}
+.cfstage .inside .to::before{font-size:14px}
+
+/* current vs future component diagrams */
+.toggle.small{padding:5px 10px;font-size:12.5px;margin-left:auto}
+.cf{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px;align-items:start}
+.cf-col{border-radius:12px;padding:14px 14px 16px;display:flex;flex-direction:column;border:1px solid var(--line)}
+.cf-col.cur{background:color-mix(in srgb,var(--pain-tint) 35%,var(--surface))}
+.cf-col.fut{background:color-mix(in srgb,var(--auto-tint) 35%,var(--surface))}
+.cf-h{margin:0 0 12px}
+.cf-h h3{font:600 1.0625rem/1.3 var(--sans);margin:2px 0 0}
+.cf-row.two{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.cf-arrow{text-align:center;font:500 11.5px/1.3 var(--mono);color:var(--ink-2);padding:7px 0 6px;position:relative}
+.cf-arrow::before{content:"↓";display:block;font-size:15px;line-height:1}
+.cf-arrow.up::before{content:"↑"}
+.cf-arrow.muted{opacity:.7}
+.comp{font:inherit;color:inherit;text-align:left;cursor:pointer;width:100%;min-width:0;position:relative;display:flex;flex-direction:column;gap:3px;padding:10px 12px 11px;background:var(--surface);border:1px solid var(--line-strong);border-radius:8px;transition:opacity .2s,transform .2s,box-shadow .2s}
+.comp:hover{border-color:var(--ink-2)}
+.comp .name{font-weight:600;font-size:14.5px;line-height:1.3;padding-right:56px}
+.comp .sub{font-size:12.5px;line-height:1.4;color:var(--ink-2)}
+.comp .chips{display:flex;flex-wrap:wrap;gap:4px;margin-top:4px}
+.comp .chips i{font-style:normal;font-size:11.5px;padding:2px 7px;border-radius:10px;background:var(--surface);border:1px solid var(--line-strong);color:var(--ink-2)}
+.comp.pain{background:var(--pain-tint);border-color:var(--pain)}
+.comp.pain .tag{color:var(--pain)}
+.comp.auto{background:var(--auto-tint);border-color:var(--auto)}
+.comp.auto .tag{color:var(--auto-ink)}
+.comp.human{background:var(--human-tint);border-color:var(--human);border-style:dashed}
+.comp.human .tag{color:var(--human-ink)}
+.comp.store{background:var(--store-tint)}
+.comp.hero{border-width:2px;border-color:var(--ink)}
+.comp.ghost{border-style:dotted}
+.badge{position:absolute;top:8px;right:8px;font:500 10.5px/1 var(--mono);padding:3px 6px;border-radius:3px;background:var(--surface);border:1px solid var(--line-strong);color:var(--ink-2)}
+.badge.b1{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+[data-cf].focus .comp{opacity:.32}
+[data-cf].focus .comp.sel,[data-cf].focus .comp.twin{opacity:1}
+.comp.sel{transform:scale(1.03);box-shadow:0 0 0 3px var(--focus);z-index:1}
+.comp.twin{box-shadow:0 0 0 2px var(--focus)}
+@media (prefers-reduced-motion: reduce){.comp{transition:none}.comp.sel{transform:none}}
+.zoom{background:var(--surface);border:1px solid var(--line-strong);border-radius:12px;padding:20px 22px 22px}
+.zoom .ztop{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.zoom h3{font:600 1.375rem/1.25 var(--sans);margin:10px 0 4px}
+.zoom .lead{margin:0 0 14px;font-weight:500;max-width:80ch}
+.inside{display:flex;flex-wrap:wrap;align-items:stretch;gap:6px;margin:0 0 16px;padding:12px;border-radius:10px;background:var(--bg);border:1px solid var(--line)}
+.inside .lbl{width:100%;font:500 11px/1.3 var(--mono);letter-spacing:.07em;text-transform:uppercase;color:var(--ink-2);margin-bottom:2px}
+.inside .step{flex:1 1 150px;background:var(--surface);border:1px solid var(--line-strong);border-radius:8px;padding:9px 11px;font-size:13.5px}
+.inside .step b{display:block;font-size:14px}
+.inside .to{align-self:center;color:var(--ink-2);font:500 15px var(--mono)}
+.zgrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+.zgrid h4{font:500 11px/1.3 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--ink-2);margin:0 0 3px}
+.zgrid p{margin:0;font-size:14.5px}
+.twinlink{margin-top:14px;font-size:14px}
+.twinlink button{font:inherit;color:var(--focus);background:none;border:0;padding:0;cursor:pointer;text-decoration:underline}
+@media (max-width:820px){.cf{grid-template-columns:minmax(0,1fr)}.zgrid{grid-template-columns:minmax(0,1fr)}}
+
+@media (max-width:820px){.phases,.three,.loopgrid{grid-template-columns:minmax(0,1fr)}}
+@media (max-width:639px){
+  .row.r4,.row.r3,.row.c3{grid-template-columns:minmax(0,1fr)}
+  .arr{height:20px;transform:rotate(90deg)}
+  .panel{grid-column:1/-1;margin:8px 0}
+  .hint{margin-left:0;width:100%}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="eyebrow">Knowledge &amp; Search Platform · Use case 3 · Proposal and proof of concept</div>
+    <h1>Author it once, govern it once, and give every channel the same answer</h1>
+    <p class="lede">Humana's answers live in hundreds of unclassified documents, and the same legal wording drifts across scripts, bots and the web. This proposal turns documents into governed knowledge units: the AI extracts, tags, matches and flags; Legal and Knowledge Ops decide; and only approved units reach search and channels.</p>
+  </header>
+  <nav class="tabs" role="tablist" aria-label="Sections">
+    <button type="button" role="tab" id="t-overview" data-tab="overview" aria-controls="overview" aria-selected="false" tabindex="-1">Overview</button>
+    <button type="button" role="tab" id="t-journey" data-tab="journey" aria-controls="journey" aria-selected="false" tabindex="-1">User journey</button>
+    <button type="button" role="tab" id="t-current" data-tab="current" aria-controls="current" aria-selected="false" tabindex="-1">Current state</button>
+    <button type="button" role="tab" id="t-future" data-tab="future" aria-controls="future" aria-selected="false" tabindex="-1">Future state</button>
+    <button type="button" role="tab" id="t-ontology" data-tab="ontology" aria-controls="ontology" aria-selected="false" tabindex="-1">Ontology</button>
+    <button type="button" role="tab" id="t-poc" data-tab="poc" aria-controls="poc" aria-selected="false" tabindex="-1">Phase 1 proof of concept</button>
+    <button type="button" role="tab" id="t-roadmap" data-tab="roadmap" aria-controls="roadmap" aria-selected="false" tabindex="-1">Roadmap</button>
+    <button type="button" role="tab" id="t-rai" data-tab="rai" aria-controls="rai" aria-selected="false" tabindex="-1">Responsible AI</button>
+    <button type="button" role="tab" id="t-artifacts" data-tab="artifacts" aria-controls="artifacts" aria-selected="false" tabindex="-1">Demo artifacts</button>
+  </nav>
+
+  <!-- PROBLEM AND PERSONA -->
+  <section class="sec tabpanel" id="overview" role="tabpanel" aria-labelledby="t-overview">
+    <div class="trade" style="margin:0 0 28px"><span class="tag">Key tradeoff</span><p><b>Governance before coverage.</b> Search goes live only on approved units, starting with one domain, so early on it answers fewer questions than a search over every raw file would. In return, every answer is current, cited and approved, and every question it cannot answer becomes the next unit to write. The cost is a review queue that needs staff and turnaround targets.</p></div>
+    <h2>The problem, and who we built for</h2>
+    <p class="blurb">The failure shows up on a live call, but it starts upstream: the unit of governance is the document, while the unit of risk is a single sentence. We focus on the people who can fix it at the source.</p>
+    <div class="cards">
+      <div class="card focus"><span class="pill">Main persona</span><h3>Maya, Knowledge Ops author</h3><p>Maintains a few hundred scripts and articles across Pharmacy and Insurance.</p><ul><li>When Legal changes wording, she has to find every copy from memory and keyword search</li><li>Near-copies with slightly different wording are missed</li><li>No view of what advocates searched for and could not find</li></ul></div>
+      <div class="card focus"><span class="pill">Gatekeeper</span><h3>David, Legal and Compliance approver</h3><p>Owns mandatory verbatim; accountable for what members hear.</p><ul><li>Approves whole documents to check one paragraph</li><li>Cannot see where approved wording ended up, or how it was changed</li><li>Finds drift in audits, after the harm</li></ul></div>
+      <div class="card"><span class="pill muted">Feels the pain</span><h3>Advocates</h3><p>Search several tools, get documents not answers, find two wordings of the same disclaimer and cannot tell which Legal approved, with a member waiting.</p></div>
+      <div class="card"><span class="pill muted">Consumers</span><h3>Channel and AI teams</h3><p>Voice bot, chat and web each rebuild their own answers from raw documents, so each gets a slightly different "truth".</p></div>
+      <div class="card"><span class="pill muted">Bears the cost</span><h3>Members</h3><p>Different answers from the bot, the advocate and the website: repeat calls, lost trust, and sometimes a wrong answer about drug costs.</p></div>
+    </div>
+  </section>
+
+  <!-- JOURNEY -->
+  <section class="sec tabpanel" id="journey" role="tabpanel" aria-labelledby="t-journey" data-sec="journey" data-first="j1">
+    <h2>User journey: Legal revises the Rx pricing disclaimer</h2>
+    <p class="blurb">The same seven steps, today and with the platform. Select any step for what happens, where it hurts, and who decides.</p>
+    <div class="legend">
+      <span><i class="sw pain"></i>Pain today</span>
+      <span><i class="sw auto"></i>AI does it</span>
+      <span><i class="sw human"></i>Human decides</span>
+      <span><i class="sw store"></i>System</span>
+      <span class="hint">Select any box for detail</span>
+    </div>
+    <div class="stage">
+      <div class="diagram">
+        <div class="lane journey">
+          <div class="jgrid">
+            <span></span>
+            <div class="stagehead"><span>1</span>Change arrives</div>
+            <div class="stagehead"><span>2</span>Locate</div>
+            <div class="stagehead"><span>3</span>Edit</div>
+            <div class="stagehead"><span>4</span>Approve</div>
+            <div class="stagehead"><span>5</span>Publish</div>
+            <div class="stagehead"><span>6</span>Propagate</div>
+            <div class="stagehead"><span>7</span>Drift</div>
+            <span class="rowlabel">Today</span>
+            <button type="button" class="node pain" data-id="j1" aria-pressed="false"><span class="tag">Pain</span><span class="name">Emailed redline</span><span class="sub">No record of what it affects</span></button>
+            <button type="button" class="node pain" data-id="j2" aria-pressed="false"><span class="tag">Pain</span><span class="name">Search by memory</span><span class="sub">Near-copies missed</span></button>
+            <button type="button" class="node pain" data-id="j3" aria-pressed="false"><span class="tag">Pain</span><span class="name">Edit each doc</span><span class="sub">New variants created</span></button>
+            <button type="button" class="node pain" data-id="j4" aria-pressed="false"><span class="tag">Pain</span><span class="name">Review whole docs</span><span class="sub">To check one paragraph</span></button>
+            <button type="button" class="node pain" data-id="j5" aria-pressed="false"><span class="tag">Pain</span><span class="name">No version link</span><span class="sub">Who approved what?</span></button>
+            <button type="button" class="node pain" data-id="j6" aria-pressed="false"><span class="tag">Pain</span><span class="name">Channels not told</span><span class="sub">Bot keeps old wording</span></button>
+            <button type="button" class="node pain" data-id="j7" aria-pressed="false"><span class="tag">Pain</span><span class="name">Audit finds it</span><span class="sub">Months later</span></button>
+            <span class="rowlabel">With the platform</span>
+            <button type="button" class="node auto" data-id="f1" aria-pressed="false"><span class="tag">AI</span><span class="name">Upload flags units</span><span class="sub">Every derived unit found</span></button>
+            <button type="button" class="node split" data-id="f2" aria-pressed="false"><span class="tag">AI + author</span><span class="name">One canonical unit</span><span class="sub">Copies already merged</span></button>
+            <button type="button" class="node split" data-id="f3" aria-pressed="false"><span class="tag">AI + author</span><span class="name">Edit one unit</span><span class="sub">AI proposes wording</span></button>
+            <button type="button" class="node human" data-id="f4" aria-pressed="false"><span class="tag">Human only</span><span class="name">Legal sees a diff</span><span class="sub">Plus where it is used</span></button>
+            <button type="button" class="node store" data-id="f5" aria-pressed="false"><span class="tag">System</span><span class="name">Versioned publish</span><span class="sub">Approval attached</span></button>
+            <button type="button" class="node store" data-id="f6" aria-pressed="false"><span class="tag">System</span><span class="name">Every channel gets v2</span><span class="sub">No second edit</span></button>
+            <button type="button" class="node auto" data-id="f7" aria-pressed="false"><span class="tag">AI</span><span class="name">Caught at upload</span><span class="sub">Stale and drift flags</span></button>
+          </div>
+          <div class="fgrid">
+            <span class="rowlabel">Finding, today</span>
+            <button type="button" class="node pain" data-id="s1" aria-pressed="false"><span class="tag">Pain</span><span class="name">Several tools</span><span class="sub">Each returns documents</span></button>
+            <button type="button" class="node pain" data-id="s2" aria-pressed="false"><span class="tag">Pain</span><span class="name">Three wordings</span><span class="sub">Which one is current?</span></button>
+            <button type="button" class="node pain" data-id="s3" aria-pressed="false"><span class="tag">Pain</span><span class="name">Read one and hope</span><span class="sub">Member waiting</span></button>
+            <button type="button" class="node pain" data-id="s4" aria-pressed="false"><span class="tag">Pain</span><span class="name">Empty search, no trace</span><span class="sub">Nobody learns</span></button>
+            <span class="rowlabel">Finding, future</span>
+            <button type="button" class="node auto" data-id="t1" aria-pressed="false"><span class="tag">AI</span><span class="name">One search</span><span class="sub">Only units the role may read</span></button>
+            <button type="button" class="node auto" data-id="t2" aria-pressed="false"><span class="tag">AI</span><span class="name">One approved unit</span><span class="sub">With citation and channels</span></button>
+            <button type="button" class="node store" data-id="t3" aria-pressed="false"><span class="tag">System</span><span class="name">Verbatim shown exactly</span><span class="sub">Never generated</span></button>
+            <button type="button" class="node human" data-id="t4" aria-pressed="false"><span class="tag">Author decides</span><span class="name">Gap goes to the queue</span><span class="sub">With a proposed unit</span></button>
+          </div>
+        </div>
+      </div>
+      <aside class="panel" aria-live="polite"></aside>
+    </div>
+  </section>
+
+  <!-- CURRENT STATE -->
+  <section class="sec tabpanel" id="current" role="tabpanel" aria-labelledby="t-current">
+    <h2>Current state: documents feed every channel directly</h2>
+    <p class="blurb">Every channel copies raw documents and keeps its own version, Legal approves whole documents by email, and nothing learns from empty searches. Select a component to zoom in; each one links to what replaces it in the future state.</p>
+    <div class="legend">
+      <span><i class="sw pain"></i>Pain today</span>
+      <span><i class="sw auto"></i>AI does it</span>
+      <span><i class="sw human"></i>Human decides</span>
+      <span><i class="sw store"></i>Store or system</span>
+      <span class="hint">Select any component to zoom in</span>
+    </div>
+    <div class="stage side cfstage">
+      <div class="cf-col cur" data-cf="current">
+                <div class="cf-row two">
+          <button type="button" class="comp pain" data-c="c_src"><span class="tag">Sources</span><span class="name">Document pile</span><span class="chips"><i>Scripts</i><i>Articles</i><i>Benefit docs</i><i>Policies</i></span></button>
+          <button type="button" class="comp human" data-c="c_legal"><span class="tag">Legal</span><span class="name">Approves whole documents</span><span class="sub">Redlines by email</span></button>
+        </div>
+        <div class="cf-arrow">copied, pasted and edited by each team</div>
+        <button type="button" class="comp pain" data-c="c_copies"><span class="tag">Channels</span><span class="name">Each channel's own copy</span><span class="chips"><i>Voice bot</i><i>Chat</i><i>Advocate desk</i><i>Web</i></span></button>
+        <div class="cf-arrow">searched separately</div>
+        <button type="button" class="comp pain" data-c="c_search"><span class="tag">Finding</span><span class="name">Several search tools</span><span class="sub">Return documents, not answers</span></button>
+        <div class="cf-arrow">a member asks about Rx pricing</div>
+        <button type="button" class="comp pain" data-c="c_out"><span class="tag">Outcome</span><span class="name">Three wordings of one disclaimer</span><span class="sub">No citation, no owner, no way to tell which is current</span></button>
+        <div class="cf-arrow muted">no way back</div>
+        <button type="button" class="comp pain ghost" data-c="c_gap"><span class="tag">Feedback</span><span class="name">Nothing learns</span><span class="sub">Empty searches and drift leave no trace</span></button>
+      </div>
+      <aside class="zoom" aria-live="polite"></aside>
+    </div>
+  </section>
+
+  <!-- FUTURE STATE -->
+  <section class="sec tabpanel" id="future" role="tabpanel" aria-labelledby="t-future">
+    <h2>Future state: author once, govern once, serve everywhere</h2>
+    <p class="blurb">Documents are split into governed units, every finding passes a human gate, and search and channels read only approved units. Badges show what the Phase 1 proof of concept already builds. Select a component to zoom in.</p>
+    <div class="legend">
+      <span><i class="sw pain"></i>Pain today</span>
+      <span><i class="sw auto"></i>AI does it</span>
+      <span><i class="sw human"></i>Human decides</span>
+      <span><i class="sw store"></i>Store or system</span>
+      <span class="hint">Select any component to zoom in</span>
+    </div>
+    <div class="stage side cfstage">
+      <div class="cf-col fut" data-cf="future">
+                <div class="cf-row two">
+          <button type="button" class="comp store" data-c="f_onto"><span class="badge b0">Phase 0</span><span class="tag">Vocabulary</span><span class="name">Ontology</span><span class="sub">Types, topics, roles</span></button>
+          <button type="button" class="comp store" data-c="f_src"><span class="badge b1">Built</span><span class="tag">Sources</span><span class="name">Documents, uploaded once</span><span class="sub">Revisions too</span></button>
+        </div>
+        <div class="cf-arrow">split into units</div>
+        <button type="button" class="comp auto" data-c="f_ingest"><span class="badge b1">Built</span><span class="tag">AI</span><span class="name">Extract, tag and compare</span><span class="chips"><i>Units</i><i>Tags</i><i>Duplicates</i><i>Conflicts</i></span></button>
+        <div class="cf-arrow">findings</div>
+        <button type="button" class="comp human" data-c="f_gates"><span class="badge b1">Built</span><span class="tag">Human only</span><span class="name">Approval gates</span><span class="chips"><i>Legal</i><i>Author</i><i>Role check</i></span></button>
+        <div class="cf-arrow">approved units only</div>
+        <button type="button" class="comp store hero" data-c="f_store"><span class="badge b1">Built</span><span class="tag">One source</span><span class="name">Governed unit store</span><span class="sub">Versioned · cited · published only</span></button>
+        <div class="cf-arrow">read by</div>
+        <div class="cf-row two">
+          <button type="button" class="comp auto" data-c="f_search"><span class="badge b2">Phase 2</span><span class="tag">AI</span><span class="name">Search</span><span class="sub">Scoped, cited, declines</span></button>
+          <button type="button" class="comp store" data-c="f_api"><span class="badge b3">Phase 3</span><span class="tag">System</span><span class="name">Channel API</span><span class="sub">Advocate · chat · voice · web</span></button>
+        </div>
+        <div class="cf-arrow">a member asks about Rx pricing</div>
+        <button type="button" class="comp auto" data-c="f_out"><span class="tag">Outcome</span><span class="name">One approved answer everywhere</span><span class="sub">Same unit, same citation, same version</span></button>
+        <div class="cf-arrow up">back to authors</div>
+        <button type="button" class="comp human" data-c="f_loop"><span class="badge b2">Phase 2</span><span class="tag">Feedback</span><span class="name">Gap queue and drift flags</span><span class="sub">Empty searches and stale units become work</span></button>
+      </div>
+      <aside class="zoom" aria-live="polite"></aside>
+    </div>
+  </section>
+
+  <!-- ONTOLOGY -->
+  <section class="sec tabpanel" id="ontology" role="tabpanel" aria-labelledby="t-ontology" data-sec="ontology" data-first="g1">
+    <h2>Ontology: how AI drafts it, and how people own it</h2>
+    <p class="blurb">The ontology is the vocabulary every unit is tagged against. In the demo it is a finished Phase 0 step. In practice the AI drafts it from the documents and the search logs, and subject-matter experts and Legal decide what goes in. Select a step for detail.</p>
+    <div class="legend">
+      <span><i class="sw auto"></i>AI does it</span>
+      <span><i class="sw human"></i>Human decides</span>
+      <span><i class="sw store"></i>Input or output</span>
+      <span class="hint">Select any box for detail</span>
+    </div>
+    <div class="stage side">
+      <div class="diagram">
+        <div class="lane">
+          <p class="lane-h">Discover · what is in the corpus</p>
+          <div class="row r4">
+            <button type="button" class="node store" data-id="g1" aria-pressed="false"><span class="tag">Input</span><span class="name">Gather sources</span><span class="sub">Documents, search logs, glossaries</span></button>
+            <span class="arr" aria-hidden="true">→</span>
+            <button type="button" class="node auto" data-id="g2" aria-pressed="false"><span class="tag">AI</span><span class="name">Embed and cluster</span><span class="sub">Candidate topics</span></button>
+            <span class="arr" aria-hidden="true">→</span>
+            <button type="button" class="node auto" data-id="g3" aria-pressed="false"><span class="tag">AI</span><span class="name">Name the clusters</span><span class="sub">Label, definition, keywords</span></button>
+            <span class="arr" aria-hidden="true">→</span>
+            <button type="button" class="node auto" data-id="g4" aria-pressed="false"><span class="tag">AI</span><span class="name">Extract entities and relations</span><span class="sub">Plans, tiers, programs, rules</span></button>
+          </div>
+        </div>
+        <p class="link">↓ candidates, never applied directly</p>
+        <div class="lane">
+          <p class="lane-h">Decide · what becomes the ontology</p>
+          <div class="row r4">
+            <button type="button" class="node auto" data-id="g5" aria-pressed="false"><span class="tag">AI</span><span class="name">Propose a schema</span><span class="sub">Classes, relation types, lexicon</span></button>
+            <span class="arr" aria-hidden="true">→</span>
+            <button type="button" class="node human" data-id="g6" aria-pressed="false"><span class="tag">Human only</span><span class="name">SME and Legal review</span><span class="sub">Approve, merge, split, rename</span></button>
+            <span class="arr" aria-hidden="true">→</span>
+            <button type="button" class="node store" data-id="g7" aria-pressed="false"><span class="tag">Output</span><span class="name">Ontology v1</span><span class="sub">Versioned; drives tags, gates, access</span></button>
+            <span class="arr" aria-hidden="true">→</span>
+            <button type="button" class="node split" data-id="g8" aria-pressed="false"><span class="tag">AI + human</span><span class="name">Refresh</span><span class="sub">New topics from search logs</span></button>
+          </div>
+        </div>
+      </div>
+      <aside class="panel" aria-live="polite"></aside>
+    </div>
+
+    <h2 style="margin-top:40px">Should AI build the graph from entities and relationships?</h2>
+    <p class="blurb">Yes, for the facts; with people deciding the shape. There are two graphs, and AI plays a different part in each.</p>
+    <div class="cards">
+      <div class="card"><span class="pill muted">Graph 1 · the schema</span><h3>The ontology itself</h3><p>Classes and relation types: Knowledge Unit, Topic, Plan, "applies to", "supersedes".</p><ul><li>AI proposes it bottom-up from the entities and relations it finds</li><li>SMEs and Legal approve every class and relation type</li><li>Changes slowly; versioned like code</li></ul></div>
+      <div class="card"><span class="pill muted">Graph 2 · the instances</span><h3>The knowledge graph</h3><p>Real entities and links: unit RX§6 is about pricing, applies to MAPD 2027, approved under LGL-2026-118.</p><ul><li>AI extracts entities and relations from every unit, at scale</li><li>Extraction is constrained to the approved schema</li><li>Anything outside the schema becomes a proposal, not a fact</li></ul></div>
+      <div class="card focus"><span class="pill">Recommendation</span><h3>Schema first, then guided extraction</h3><ul><li>Free extraction invents relation types ("is kind of related to"); a fixed schema keeps the graph queryable</li><li>Resolve entities against the lexicon so "MAPD" and "Medicare Advantage Rx" become one node</li><li>Measure extraction against a sample SMEs label, before trusting the graph</li><li>Governance relations (approved by, can read) are set by people, never extracted</li></ul></div>
+    </div>
+
+    <h2 style="margin-top:40px">Demo ontology graph</h2>
+    <p class="blurb">Switch between the schema (the classes every unit is tagged with) and an instance (one real unit from the demo, with the links the pipeline created). Select any node for its meaning.</p>
+    <div class="toolbar" role="group" aria-label="Graph view">
+      <button type="button" class="toggle" data-view="schema" aria-pressed="true">Schema: classes and relations</button>
+      <button type="button" class="toggle" data-view="instance" aria-pressed="false">Instance: the Rx pricing disclaimer</button>
+    </div>
+    <div class="legend">
+      <span><i class="sw auto"></i>Core object</span>
+      <span><i class="sw human"></i>Set by people only</span>
+      <span><i class="sw store"></i>Extracted or recommended by AI</span>
+      <span><i class="sw pain"></i>Conflict found</span>
+    </div>
+    <div class="stage">
+      <div class="diagram"><div class="lane graphbox"><div id="ograph"></div></div></div>
+      <aside class="panel" id="opanel" aria-live="polite"></aside>
+    </div>
+  </section>
+
+  <!-- POC -->
+  <section class="sec tabpanel" id="poc" role="tabpanel" aria-labelledby="t-poc" data-sec="poc" data-first="p1">
+    <h2>Phase 1: the proof of concept we built</h2>
+    <p class="blurb">The author-and-govern half of the future state, end to end, on two made-up Rx scripts with planted duplicates and conflicts. It runs in two notebooks on a Chroma store, with LangGraph for the approval gates.</p>
+    <div class="stats">
+      <div class="stat"><b>18</b><span>approved baseline units</span></div>
+      <div class="stat"><b>21</b><span>units from the second script</span></div>
+      <div class="stat"><b>2</b><span>linked by AI alone</span></div>
+      <div class="stat"><b>19</b><span>paused for a human</span></div>
+      <div class="stat"><b>1</b><span>wrong-role decision refused</span></div>
+      <div class="stat"><b>1</b><span>wording update reaching every channel</span></div>
+    </div>
+    <div class="stage side">
+      <div class="diagram">
+        <div class="lane">
+          <p class="lane-h">ingestion_book · upload, extract, tag, compare</p>
+          <div class="row r4">
+            <button type="button" class="node store" data-id="p1" aria-pressed="false"><span class="tag">Input</span><span class="name">Two test scripts</span><span class="sub">Inbound v3.2, outbound v1.7</span></button>
+            <span class="arr" aria-hidden="true">→</span>
+            <button type="button" class="node auto" data-id="p2" aria-pressed="false"><span class="tag">AI</span><span class="name">Units and tags</span><span class="sub">Header card and summary</span></button>
+            <span class="arr" aria-hidden="true">→</span>
+            <button type="button" class="node store" data-id="p3" aria-pressed="false"><span class="tag">Store</span><span class="name">Chroma</span><span class="sub">Published units only</span></button>
+            <span class="arr" aria-hidden="true">→</span>
+            <button type="button" class="node auto" data-id="p4" aria-pressed="false"><span class="tag">AI</span><span class="name">Findings</span><span class="sub">Seven kinds</span></button>
+          </div>
+        </div>
+        <p class="link">↓ every finding enters the approvals graph</p>
+        <div class="lane">
+          <p class="lane-h">approvals_book · LangGraph human gates</p>
+          <div class="row r4">
+            <button type="button" class="node auto" data-id="p5" aria-pressed="false"><span class="tag">AI decides</span><span class="name">Auto-link</span><span class="sub">Exact duplicates only</span></button>
+            <span class="arr" aria-hidden="true">·</span>
+            <button type="button" class="node human" data-id="p6" aria-pressed="false"><span class="tag">Human only</span><span class="name">Review pause</span><span class="sub">Legal 7 · Author 12</span></button>
+            <span class="arr" aria-hidden="true">→</span>
+            <button type="button" class="node split" data-id="p7" aria-pressed="false"><span class="tag">Rule</span><span class="name">Role check</span><span class="sub">Wrong role refused</span></button>
+            <span class="arr" aria-hidden="true">→</span>
+            <button type="button" class="node store" data-id="p8" aria-pressed="false"><span class="tag">System</span><span class="name">Apply and log</span><span class="sub">Versions, decisions.txt</span></button>
+          </div>
+        </div>
+      </div>
+      <aside class="panel" aria-live="polite"></aside>
+    </div>
+  </section>
+
+  <!-- NEXT PHASES -->
+  <section class="sec tabpanel" id="roadmap" role="tabpanel" aria-labelledby="t-roadmap">
+    <h2>Phases 2 and 3, then improve as data comes in</h2>
+    <p class="blurb">Start with people deciding and the system proposing; widen automation only where the evaluations show it is safe.</p>
+    <ol class="phases">
+      <li class="phase now"><span class="tag">Phase 1 · built as a proof of concept</span><h3>Author and govern, one domain</h3><p>Pharmacy (Rx) scripts, where inconsistent legal wording costs most.</p><ul><li>Units extracted and tagged against the ontology</li><li>Duplicate, drift and conflict check</li><li>Human approval gates with a role check</li><li>Versioned publish and an audit log</li></ul></li>
+      <li class="phase"><span class="tag">Phase 2</span><h3>Search and drift on governed units</h3><p>Search goes live with the first governed knowledge base, not after a full migration.</p><ul><li>Hybrid search over published units only, scoped by role before retrieval</li><li>Every answer cites its unit; "no approved answer" when it has none</li><li>Unanswered questions land in the author's queue with a proposed unit</li><li>Golden set measured before anyone relies on it</li><li>Revised source documents flag their units stale and propose the fix</li></ul></li>
+      <li class="phase"><span class="tag">Phase 3</span><h3>Channels and scale</h3><p>The other AI use cases plug into the same approved units.</p><ul><li>One API for advocate assist, member chat, voice bot, web and outbound</li><li>More domains: Insurance, then clinical with a clinical reviewer gate</li><li>Bulk migration with AI splitting unmarked documents</li><li>Production hardening: Postgres audit table, persistent vector store, review screen, roles from single sign-on</li></ul></li>
+    </ol>
+    <div class="loop">
+      <h3>Iterative improvement as data is gathered</h3>
+      <div class="loopgrid">
+        <div><b>Search logs → content</b>Questions that came back empty are clustered and become the next units to write, before anyone tunes ranking.</div>
+        <div><b>Reviewer overrides → rules</b>A high override rate on AI proposals means the rules or tags are wrong; near zero may mean rubber-stamping, so a sample is audited.</div>
+        <div><b>Golden set → trust</b>The question set grows from real searches and reruns on every change to extraction, tagging or retrieval.</div>
+        <div><b>Evidence → automation</b>Low-risk finding types move toward auto-resolution only after the numbers show the rules are reliable. Legal and clinical never do.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- RAI -->
+  <section class="sec tabpanel" id="rai" role="tabpanel" aria-labelledby="t-rai">
+    <h2>Responsible AI guardrails</h2>
+    <p class="blurb">Getting knowledge wrong is a compliance and safety issue. These guardrails are built into the proof of concept, not promised for later.</p>
+    <div class="three">
+      <div class="col auto"><span class="tag">AI decides</span><h3>Mechanical work only</h3><ul><li>Split documents into units; classify type</li><li>Link exact duplicates</li><li>Flag drift, staleness and expiry</li><li>Scope search to what the role may read; decline without evidence</li></ul></div>
+      <div class="col rec"><span class="tag">AI recommends, human confirms</span><h3>Proposals with evidence</h3><ul><li>Topics, tags, knowledge base and channel</li><li>Merges, variants and wording updates, with a word-level diff</li><li>New units drafted from unanswered questions</li></ul></div>
+      <div class="col human"><span class="tag">Human only</span><h3>Decisions with accountability</h3><ul><li>Approve or publish legal or clinical content</li><li>Resolve a conflict of authority</li><li>Grant a role access to a knowledge base</li><li>Retire a source of record</li></ul></div>
+    </div>
+    <div class="tablewrap" style="margin-top:14px">
+      <table>
+        <tr><th>Guardrail</th><th>How it works</th><th>Where to see it</th></tr>
+        <tr><td>Explicit approval gate</td><td>Every finding except an exact duplicate pauses for a named reviewer before anything is published</td><td><code>approvals_book</code>, review queues</td></tr>
+        <tr><td>Role check</td><td>A decision from the wrong role is refused and logged; the item keeps waiting</td><td>The author's attempt on the pricing disclaimer</td></tr>
+        <tr><td>Legal wording routed by rule</td><td>Any change to marked verbatim goes to Legal, whatever a model concludes</td><td><code>judge()</code> in the ingestion pipeline</td></tr>
+        <tr><td>Verbatim is never generated</td><td>Verbatim units are shown word for word; a model may write around them, never rewrite them</td><td>Unit type <code>verbatim_legal</code> in the ontology</td></tr>
+        <tr><td>Only published units are retrievable</td><td>Drafts are compared but never stored; superseded versions stay for the record but are filtered out</td><td>Chroma status filter</td></tr>
+        <tr><td>Filter before retrieval</td><td>Search is restricted to the asker's knowledge bases before ranking, so out-of-scope units can never come back</td><td>Two-role query in <code>ingestion_book</code></td></tr>
+        <tr><td>Wording-sensitive drift check</td><td>Ingestion compares wording, not just meaning, so four dropped words in a disclaimer are flagged</td><td><code>embedding_comparison.xlsx</code></td></tr>
+        <tr><td>Audit trail</td><td>Every decision, automatic link and refused attempt is timestamped with who, what and the approval ID</td><td><code>decisions.txt</code>, LangGraph history</td></tr>
+        <tr><td>Made-up data only</td><td>No member, provider or claims data; all plans, figures and approvals are illustrative</td><td>Test scripts</td></tr>
+        <tr><td>Stop rule (production)</td><td>A certified legal or benefits error returns that topic to human-only review until the cause is found</td><td>Agreed with Compliance before launch</td></tr>
+      </table>
+    </div>
+  </section>
+
+  <!-- ARTIFACTS -->
+  <section class="sec tabpanel" id="artifacts" role="tabpanel" aria-labelledby="t-artifacts">
+    <h2>What is in the demo, and why notebooks</h2>
+    <p class="blurb">The proof of concept is two notebooks rather than an app on purpose. A notebook is compact, shows every step and its data in order, and reruns end to end in under a minute. It keeps attention on the hard part (structure, governance and single-source reuse) instead of on screens. The review screen and channel UIs come once the data and the gates are proven.</p>
+    <div class="tablewrap">
+      <table>
+        <tr><th>Artifact</th><th>What it shows</th></tr>
+        <tr><td><code>ingestion/ingestion_book.ipynb</code></td><td>Ontology graph, upload of both scripts with header card and summary, units and tags, the Chroma store and a two-role query, duplicate and conflict findings with word-level diffs, routing queues</td></tr>
+        <tr><td><code>approvals/approvals_book.ipynb</code></td><td>LangGraph approval flow: automatic links, review queues for Legal and the author, the refused wrong-role decision, versioned publishing, decision log and audit trail</td></tr>
+        <tr><td><code>approvals/decisions.txt</code></td><td>Timestamped log of every decision and refused attempt from the saved run</td></tr>
+        <tr><td><code>ingestion/RX-EDU-SCRIPT_v3.2.md</code>, <code>PHARM-OUTREACH-SCRIPT_v1.7.md</code></td><td>Made-up test scripts with planted exact duplicates, legal near-duplicates, variants, a contradiction and a stale section</td></tr>
+        <tr><td><code>ingestion/knowledge_ontology_v1.json</code>, <code>ontology_graph.html</code></td><td>Phase 0 ontology: classes, relations, keywords, lexicon, access and approval rules, and its graph with definitions</td></tr>
+        <tr><td><code>approvals/pipeline.py</code></td><td>The ingestion code as a module, generated from the ingestion notebook so the two never drift</td></tr>
+        <tr><td><code>ingestion/embedding_comparison.xlsx</code></td><td>Why ingestion compares wording while search will compare meaning</td></tr>
+        <tr><td><code>ingestion/LLM_USAGE.md</code></td><td>Where Claude is used today, where a real deployment needs it, and where it never should be</td></tr>
+        <tr><td><code>ROADMAP.md</code></td><td>Phases, sequencing rationale and production hardening</td></tr>
+      </table>
+    </div>
+    <p class="blurb" style="margin-top:14px">Repository: <a href="https://github.com/fractalz7/authoring_and_governance">github.com/fractalz7/authoring_and_governance</a></p>
+  </section>
+
+  <p class="foot">Proposal draft, November 2026. All documents, names, plans, figures and approvals are made up for illustration and do not describe real Humana policy.</p>
+</div>
+
+<script>
+
+// ---- tabs ----
+(function () {
+  var tabs = Array.prototype.slice.call(document.querySelectorAll('[role="tab"]'));
+  var names = tabs.map(function (t) { return t.dataset.tab; });
+  var nav = document.querySelector('.tabs');
+  function activate(name, focusTab) {
+    if (names.indexOf(name) < 0) name = 'overview';
+    tabs.forEach(function (t) {
+      var on = t.dataset.tab === name;
+      t.setAttribute('aria-selected', String(on));
+      t.tabIndex = on ? 0 : -1;
+      if (on && focusTab) t.focus();
+      if (on) t.scrollIntoView({block: 'nearest', inline: 'nearest'});
+    });
+    document.querySelectorAll('.tabpanel').forEach(function (p) { p.hidden = p.id !== name; });
+    if (nav.getBoundingClientRect().top < 0) window.scrollTo(0, nav.offsetTop);
+  }
+  window.openTab = function (name) {
+    if (location.hash !== '#' + name) { try { history.replaceState(null, '', '#' + name); } catch (e) {} }
+    activate(name, false);
+  };
+  tabs.forEach(function (t, i) {
+    t.addEventListener('click', function () { window.openTab(t.dataset.tab); });
+    t.addEventListener('keydown', function (ev) {
+      var j = ev.key === 'ArrowRight' ? i + 1 : ev.key === 'ArrowLeft' ? i - 1 : ev.key === 'Home' ? 0 : ev.key === 'End' ? tabs.length - 1 : null;
+      if (j === null) return;
+      ev.preventDefault();
+      j = (j + tabs.length) % tabs.length;
+      window.openTab(tabs[j].dataset.tab); tabs[j].focus();
+    });
+  });
+  window.addEventListener('hashchange', function () { activate(location.hash.slice(1), false); });
+  activate(location.hash.slice(1), false);
+})();
+
+(function () {
+  var e = function (kind, kl, title, lead, fields) { return { kind: kind, kl: kl, title: title, lead: lead, fields: fields }; };
+  var D = {
+
+    g1: e('store', 'Ontology · input', 'Gather sources', 'Everything that shows how Humana talks about its knowledge.', [['What goes in', 'The document set (scripts, articles, benefit documents, policies), advocate search logs, existing glossaries, and regulatory vocabulary such as CMS terms.'], ['Why search logs', 'They show topics people ask about that nobody has written about yet, and the words they actually use.']]),
+    g2: e('auto', 'Ontology · AI', 'Embed and cluster', 'Units are embedded and grouped by meaning into candidate topics.', [['Method', 'Embedding-based clustering (the BERTopic approach: embed, cluster, then find each cluster\'s distinctive words). It handles short paragraphs and synonyms.'], ['Why not plain LDA', 'Latent Dirichlet allocation works on bags of words and needs longer documents; on paragraph-sized units it is noisy and unstable between runs. A keyword-guided LDA can still help refine an existing topic list.']]),
+    g3: e('auto', 'Ontology · AI', 'Name the clusters', 'An LLM proposes a label, a one-line definition, keywords and example units for each cluster.', [['Output', 'Candidate topics such as pharmacy.mail_order, with the units that support them, so reviewers can check the evidence.'], ['Guardrail', 'Proposals only; nothing is applied until reviewed.']]),
+    g4: e('auto', 'Ontology · AI', 'Extract entities and relations', 'An LLM reads each unit and pulls out the things it mentions and how they connect.', [['Examples', 'Entities: plans (MAPD, PDP), plan years, drug tiers, pharmacies, programs (Extra Help), documents, roles. Relations: applies to, requires, supersedes, conflicts with.'], ['First pass', 'Run open-ended on a sample to discover what the schema is missing; afterwards, extraction is constrained to the approved schema.']]),
+    g5: e('auto', 'Ontology · AI', 'Propose a schema', 'Candidate entity types and relations are grouped into classes, relation types and a hierarchy.', [['Lexicon', 'Synonyms, acronyms and misspellings that refer to the same thing are merged: "PA" and "prior auth" become one term.'], ['Output', 'A draft ontology with a change list: new classes, merges, splits and renames, each with supporting examples.']]),
+    g6: e('human', 'Ontology · human only', 'SME and Legal review', 'Subject-matter experts and Legal decide what the ontology is.', [['They approve, merge, split or rename', 'Topics, classes, relation types and lexicon entries.'], ['People only', 'Unit types, compliance classes, approval rules and which roles may read which knowledge base. These encode policy and accountability, so they are never inferred.']]),
+    g7: e('store', 'Ontology · output', 'Ontology v1', 'A versioned file that the rest of the platform reads.', [['What it drives', 'Unit type decides the approval gate; topic decides the knowledge base; the knowledge base decides who can read it in search; the lexicon expands search queries.'], ['In the demo', 'knowledge_ontology_v1.json, treated as a finished Phase 0 step.']]),
+    g8: e('auto', 'Ontology · AI and human', 'Refresh', 'The ontology is re-checked on a schedule and when the content changes.', [['AI', 'Re-clusters new documents and search logs and proposes changes: new topics, new synonyms, topics nobody uses any more.'], ['Human', 'Every change goes through the same review and becomes a new version, so tags can be re-applied consistently.']]),
+    // journey: today
+    j1: e('pain', 'Today · step 1', 'Change arrives by email', 'Legal revises the Rx pricing disclaimer and sends a redline.', [['Pain', 'The change goes to people, not to the content. Nothing records which scripts, articles or bots carry that wording.'], ['Who feels it', 'Maya, who now has to work out the blast radius by hand.']]),
+    j2: e('pain', 'Today · step 2', 'Search by memory', 'Maya keyword-searches and relies on what she remembers.', [['Pain', 'Near-copies with slightly different wording do not match the search, so they are missed.'], ['Risk', 'The copy nobody knew about keeps the old wording live.']]),
+    j3: e('pain', 'Today · step 3', 'Edit each document by hand', 'Every copy is edited separately.', [['Pain', 'Small differences creep in during editing, creating new near-duplicates.']]),
+    j4: e('pain', 'Today · step 4', 'Review whole documents', 'Maya sends the edited documents back to Legal.', [['Pain', 'David reads whole documents to check one paragraph and cannot easily see what changed.']]),
+    j5: e('pain', 'Today · step 5', 'Publish with no version link', 'Documents are updated in the knowledge base.', [['Pain', 'Nothing ties the published text to the approval, so nobody can show who approved which wording.']]),
+    j6: e('pain', 'Today · step 6', 'Channels may not be told', 'Voice bot, chat and web teams hear about it, or not.', [['Pain', 'The bot cites the old version, the advocate reads another, the website shows a third.']]),
+    j7: e('pain', 'Today · step 7', 'Drift found in an audit', 'An audit or a member complaint surfaces the inconsistency.', [['Pain', 'Found months later, after the harm.']]),
+    // journey: future
+    f1: e('auto', 'Future · step 1 · AI', 'The upload flags affected units', 'The revised source is treated as a new upload.', [['What happens', 'Every unit derived from it is found and flagged, because units carry a link back to their source document and section.'], ['Phase', 'Drift on revision is Phase 2; flags against older content already run in the proof of concept.']]),
+    f2: e('auto', 'Future · step 2 · AI and author', 'One canonical unit', 'There is one unit to change, with the list of every document and channel that uses it.', [['Why', 'Near-copies were merged at ingestion, with the author confirming each merge.'], ['In the demo', 'Exact duplicates link automatically; "same meaning" merges wait for the author.']]),
+    f3: e('auto', 'Future · step 3 · AI and author', 'Edit one unit', 'Maya edits the unit; the AI can propose wording.', [['Who decides', 'The author. The AI proposes, never publishes.']]),
+    f4: e('human', 'Future · step 4 · human only', 'Legal approves a diff', 'David sees only the changed unit as a word-level diff, plus every channel it reaches.', [['Why it matters', 'Review effort drops from whole documents to one paragraph, and the approval is precise.'], ['Guardrail', 'A decision from the wrong role is refused.']]),
+    f5: e('store', 'Future · step 5 · system', 'Versioned publish', 'The approved text becomes v2; v1 is kept as superseded.', [['Audit', 'Approval ID, approver and timestamp are attached and logged.']]),
+    f6: e('store', 'Future · step 6 · system', 'Every channel picks up v2', 'Channels and search read the unit store, so the change lands everywhere at once.', [['In the demo', 'Legal adopts the outreach recording disclosure; an inbound advocate search returns v2 with no second edit.']]),
+    f7: e('auto', 'Future · step 7 · AI', 'Drift caught at upload', 'Conflicts and stale content are found when a document comes in, not in an audit.', [['In the demo', 'The outreach script\'s "donut hole" section is flagged stale against the 2027 unit.']]),
+    // finding journey
+    s1: e('pain', 'Finding today', 'Several tools', 'An advocate on a live call searches more than one tool.', [['Pain', 'Each tool returns documents, not answers, and different documents at that.']]),
+    s2: e('pain', 'Finding today', 'Three wordings', 'Typing "Rx pricing disclaimer" returns three documents with three wordings.', [['Pain', 'Search cannot say which is current or which one Legal approved.']]),
+    s3: e('pain', 'Finding today', 'Read one and hope', 'The member is waiting, so the advocate picks one.', [['Risk', 'A compliance error on a recorded call.']]),
+    s4: e('pain', 'Finding today', 'Empty searches leave no trace', 'Questions with no result are not logged.', [['Pain', 'Knowledge owners cannot see what advocates need and do not have.']]),
+    t1: e('auto', 'Finding future', 'One search, scoped by role', 'Search covers only the knowledge bases the asker\'s role may read, filtered before ranking.', [['In the demo', 'The same question returns the pricing disclaimer to a pharmacy advocate and never to an insurance advocate.'], ['Phase', 'Full search with answers is Phase 2.']]),
+    t2: e('auto', 'Finding future', 'One approved unit, cited', 'The answer comes back with the unit it rests on and the channels that use it.', [['Why', 'The advocate can verify it, and Compliance can trace it.']]),
+    t3: e('store', 'Finding future', 'Verbatim shown exactly', 'Legal verbatim units are returned word for word.', [['Guardrail', 'A model may write around them, never rewrite them.']]),
+    t4: e('human', 'Finding future', 'Gaps go to the author', 'When no approved unit supports an answer, search says so and logs the question.', [['What happens next', 'Similar questions are clustered and a draft unit is proposed; the author decides whether to write it or fix the process behind it.']]),
+    // states
+    cur1: e('pain', 'Current state', 'The document pile', 'Hundreds of unclassified scripts, knowledge articles, benefit documents and policies.', [['Problem', 'The same legal wording is copied across many documents and drifts. Mandatory verbatim is buried in long documents.']]),
+    cur2: e('pain', 'Current state', 'Each channel\'s own copy', 'Voice, chat, advocate desktop and web each pull from raw documents or write their own answers.', [['Problem', 'There is no single source of truth, so each team maintains its own version.']]),
+    cur3: e('pain', 'Current state', 'Different answers', 'An assistant retrieving over raw documents gives inconsistent, sometimes non-compliant answers.', [['Problem', 'No citation to an approved source, and no owner for the answer.']]),
+    fut0: e('store', 'Future · Phase 0', 'Ontology', 'The shared vocabulary every unit is tagged against: unit types, compliance classes, topics, knowledge bases, roles, channels and Humana-speak.', [['How it is built', 'AI proposes a seed from the corpus; subject-matter experts and Legal approve it. Treated as done in the demo.'], ['What it drives', 'Unit type decides the approval gate; topic decides the knowledge base; the knowledge base decides who can read it.']]),
+    fut1: e('auto', 'Future · AI', 'Extract and tag units', 'Documents are split into units: a verbatim line, a rule, a fact, a script step.', [['Why units', 'The risk lives in a paragraph, so the paragraph is what gets tagged, approved, versioned and served.']]),
+    fut2: e('auto', 'Future · AI', 'Duplicate and conflict check', 'Each new unit is compared with approved units and sorted: exact duplicate, legal wording differs, same meaning, variant, contradiction, stale or new.', [['Design choice', 'Comparison is wording-sensitive, so dropped words in legal text count.']]),
+    fut3: e('human', 'Future · human only', 'Approval gates', 'Legal decides legal wording, contradictions and stale content; the author decides variants, merges and operational units.', [['Guardrail', 'Only exact duplicates skip a human. A decision from the wrong role is refused.']]),
+    fut4: e('store', 'Future · store', 'Governed unit store', 'Published units only, each with version, approval, source document and section, and the channels that use it.', [['Why', 'One place every consumer reads, so one approval updates everything.']]),
+    fut5: e('auto', 'Future · AI', 'Search', 'Hybrid search over published units, scoped by role before retrieval.', [['Behaviour', 'Cites the unit; says "no approved answer" when it has none and logs the question to the author\'s queue.'], ['Phase', 'Phase 2, launched with the first governed knowledge base.']]),
+    fut6: e('store', 'Future · consumers', 'Channels', 'Advocate assist, member chat, voice bot, web and outbound all read the same approved unit.', [['Why it matters', 'The other AI use cases wait on this layer. Phase 3.']]),
+    // poc
+    p1: e('store', 'Proof of concept · input', 'Two made-up test scripts', 'An inbound Rx education script (v3.2, approved baseline) and an older outbound outreach script from another team.', [['Planted on purpose', 'Exact duplicates, legal near-duplicates (the pricing disclaimer drops three phrases), plan-year and channel variants, a mail-order contradiction and a stale "donut hole" section.']]),
+    p2: e('auto', 'Proof of concept · ingestion', 'Units, tags, header and summary', 'Each upload shows author, owner, uploader, time, version, category and a two-sentence summary, then the units with their tags.', [['Numbers', '18 units from the first script, 4 of them legal verbatim; 21 from the second, 6 verbatim.'], ['Model', 'Claude tags and summarizes when an API key is set; ontology keyword rules otherwise.']]),
+    p3: e('store', 'Proof of concept · store', 'Chroma', 'Holds only published units: text, ontology tags, approval and a wording-sensitive embedding.', [['Shown in the notebook', 'The store\'s contents, one full record, and the same question run as two roles.']]),
+    p4: e('auto', 'Proof of concept · ingestion', 'Findings', 'The second script\'s 21 units are sorted into seven kinds.', [['Result', '2 exact duplicates, 3 legal wording differences, 1 contradiction, 1 stale, 4 variants, 2 same meaning, 8 new.'], ['Known gap', 'Offline rules miss one claim-level contradiction (preferred-pharmacy copays); the author catches it at review.']]),
+    p5: e('auto', 'Proof of concept · approvals · AI decides', 'Automatic link', 'Exact duplicates are linked to the approved unit with no human involved.', [['Result', '2 items; the approved unit now also cites the second script.']]),
+    p6: e('human', 'Proof of concept · approvals · human only', 'Review pause', 'Every other finding pauses the graph and waits for a named reviewer.', [['Queues', '7 for Legal (legal wording, contradiction, stale, new legal units) and 12 for the author.'], ['Decisions in the run', 'Legal keeps the approved pricing disclaimer and closing, adopts the outreach recording disclosure, rejects the mail-order contradiction. The author rejects one merge as a real contradiction.']]),
+    p7: e('auto', 'Proof of concept · approvals · rule', 'Role check', 'A decision is accepted only from the required role.', [['Shown', 'The author tries to approve Legal\'s pricing-disclaimer item: refused and logged, still waiting until Legal decides.']]),
+    p8: e('store', 'Proof of concept · approvals · system', 'Apply and log', 'Approved changes publish to Chroma as new units, variants or new versions; rejected items change nothing.', [['Result', '31 records after the run: 30 published, 1 superseded. The recording disclosure has a v2 that every channel reads.'], ['Audit', 'Every event is appended to decisions.txt with a timestamp, and LangGraph keeps the step history.']])
+  };
+
+  var narrow = window.matchMedia('(max-width: 639px)');
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  function el(tag, cls, text) { var n = document.createElement(tag); if (cls) n.className = cls; if (text != null) n.textContent = text; return n; }
+  function render(panel, d) {
+    panel.dataset.kind = d.kind;
+    panel.replaceChildren();
+    panel.append(el('span', 'kind', d.kl), el('h3', null, d.title), el('p', 'lead', d.lead));
+    d.fields.forEach(function (f) { var w = el('div', 'field'); w.append(el('h4', null, f[0]), el('p', null, f[1])); panel.append(w); });
+  }
+  document.querySelectorAll('section[data-sec]').forEach(function (sec) {
+    var panel = sec.querySelector('.panel');
+    var home = panel.parentElement, homeNext = panel.nextElementSibling;
+    var nodes = sec.querySelectorAll('[data-id]');
+    var lastAnchor = null;
+    function place(anchor) {
+      lastAnchor = anchor || lastAnchor;
+      if (narrow.matches && lastAnchor) { lastAnchor.after(panel); }
+      else if (panel.parentElement !== home || panel.nextElementSibling !== homeNext) { home.insertBefore(panel, homeNext); }
+    }
+    function reveal() {
+      var r = panel.getBoundingClientRect();
+      if (r.top < 0 || r.bottom > window.innerHeight) panel.scrollIntoView({ block: 'nearest', behavior: reduce ? 'auto' : 'smooth' });
+    }
+    function select(id, doReveal) {
+      nodes.forEach(function (n) { n.setAttribute('aria-pressed', String(n.dataset.id === id)); });
+      render(panel, D[id]);
+      place(sec.querySelector('[data-id="' + id + '"]'));
+      if (doReveal) reveal();
+    }
+    sec.addEventListener('click', function (ev) {
+      var b = ev.target.closest('[data-id]');
+      if (!b || !sec.contains(b)) return;
+      select(b.dataset.id, true);
+    });
+    narrow.addEventListener('change', function () { place(); });
+    select(sec.dataset.first, false);
+  });
+})();
+
+// ---- current vs future: zoomable component diagrams ----
+(function () {
+  var C = {
+    c_src: {k:'pain', side:'Current state', title:'Document pile', lead:'Hundreds of unclassified scripts, knowledge articles, benefit documents and policies.',
+      inside:['Scripts','Knowledge articles','Benefit documents','Policies'], insideLbl:'What is in it',
+      cols:[['Pain','The same legal wording is copied into many documents and drifts. Mandatory verbatim is buried in long documents a human must open and follow by hand.'],['Why it happens','The unit of governance is the whole document, while the unit of risk is one paragraph.'],['Example','The Rx pricing disclaimer exists in three slightly different wordings across three documents.']], twin:['f_src','f_ingest']},
+    c_legal: {k:'human', side:'Current state', title:'Legal approves whole documents', lead:'David reviews edited documents sent back by authors, and sends revisions as email redlines.',
+      inside:['Redline by email','Author hunts for copies','Whole document returned','Approved, then loses sight of it'], insideLbl:'How a change flows today',
+      cols:[['Pain','Reads whole documents to check one paragraph; cannot see where approved wording ended up, or how it was edited later.'],['Risk','Finds drift in audits, after the harm. Accountable without control.'],['What changes','Approves one unit as a diff, with the list of channels it reaches.']], twin:['f_gates']},
+    c_copies: {k:'pain', side:'Current state', title:"Each channel's own copy", lead:'Voice bot, chat, advocate desktop and web each pull from raw documents or write their own answers.',
+      inside:['Voice bot copy','Chat copy','Advocate desk documents','Web copy'], insideLbl:'Four versions of the truth',
+      cols:[['Pain','When Legal revises wording, nobody can find and update every place it lives.'],['Cost','Each team maintains its own answer; the bot cites one wording, the advocate reads another, the website shows a third.'],['What changes','One governed store that every channel reads, through one API.']], twin:['f_store','f_api']},
+    c_search: {k:'pain', side:'Current state', title:'Several search tools', lead:'An advocate on a live call searches more than one tool and gets documents, not answers.',
+      inside:['Tool A: documents','Tool B: other documents','Open and scroll','Pick one'], insideLbl:'What the advocate does',
+      cols:[['Pain','Search cannot say which result is current or which wording Legal approved.'],['Risk','Reading an unapproved wording on a recorded call.'],['What changes','One search over approved units only, scoped by role, citing the unit.']], twin:['f_search']},
+    c_out: {k:'pain', side:'Current state', title:'Three wordings of one disclaimer', lead:'Typing "Rx pricing disclaimer" today returns three documents with three wordings.',
+      inside:['Voice bot says A','Advocate reads B','Website shows C'], insideLbl:'One question, three answers',
+      cols:[['Member impact','Inconsistent, sometimes non-compliant answers; repeat calls and lost trust.'],['Compliance impact','No citation to an approved source and no owner for the answer.'],['What changes','The same approved unit, version and citation in every channel.']], twin:['f_out']},
+    c_gap: {k:'pain', side:'Current state', title:'Nothing learns', lead:'Questions that come back empty are not logged, and drift is found only in audits.',
+      inside:['Empty search','No log','No owner','Same gap tomorrow'], insideLbl:'The missing loop',
+      cols:[['Pain','Knowledge owners cannot see what advocates need and do not have.'],['Cost','Authors write from complaints and guesses, not demand.'],['What changes','Empty searches and drift flags become the author\'s work queue.']], twin:['f_loop']},
+
+    f_onto: {k:'store', side:'Future state', badge:'Phase 0 · treated as done', title:'Ontology', lead:'The shared vocabulary every unit is tagged against.',
+      inside:['Unit types','Compliance classes','Topics','Knowledge bases and roles','Humana-speak lexicon'], insideLbl:'What it defines',
+      cols:[['How it is built','AI proposes a seed from the document set; subject-matter experts and Legal approve it.'],['What it drives','Unit type decides the approval gate; topic decides the knowledge base; the knowledge base decides who can read it in search.'],['In the demo','knowledge_ontology_v1.json and its graph, loaded as a finished Phase 0 step.']], twin:[]},
+    f_src: {k:'store', side:'Future state', badge:'Built in Phase 1', title:'Documents, uploaded once', lead:'Authors upload documents, and revisions of them, into one pipeline.',
+      inside:['Author from the document','Owner from the document','Uploader at upload','Version and plan year'], insideLbl:'Captured at upload',
+      cols:[['What changes','The document stays the source of record, but it is no longer what channels read.'],['Revisions','A revised document is treated as a new upload, so drift detection falls out of the same flow (Phase 2).'],['In the demo','Two made-up Rx scripts with a header card and a two-sentence summary for each.']], twin:['c_src']},
+    f_ingest: {k:'auto', side:'Future state', badge:'Built in Phase 1', title:'Extract, tag and compare', lead:'The AI splits each document into units, tags them, and compares them with approved units.',
+      inside:['Split into units','Tag against the ontology','Compare wording with approved units','Sort into seven findings'], insideLbl:'Inside the component',
+      cols:[['AI decides','Unit boundaries, unit type, exact duplicates, drift and staleness flags.'],['AI recommends','Topics, knowledge base, merges and variants, for the author to confirm.'],['In the demo','21 units from the outreach script: 2 exact duplicates, 3 legal wording differences, 1 contradiction, 1 stale, 4 variants, 2 same meaning, 8 new.']], twin:['c_src']},
+    f_gates: {k:'human', side:'Future state', badge:'Built in Phase 1', title:'Approval gates', lead:'Every finding except an exact duplicate pauses for a named human.',
+      inside:['Route by finding','Pause for Legal or author','Role check','Apply and log'], insideLbl:'Inside the component (LangGraph)',
+      cols:[['Who decides','Legal: legal wording, contradictions, stale content and new legal units. Author: variants, merges and operational units.'],['Guardrail','A decision from the wrong role is refused and logged; the item keeps waiting.'],['In the demo','7 items for Legal, 12 for the author, 1 refused attempt, every event in decisions.txt.']], twin:['c_legal']},
+    f_store: {k:'store', side:'Future state', badge:'Built in Phase 1', title:'Governed unit store', lead:'The one place every consumer reads: published units only.',
+      inside:['Published units only','Versions with approval IDs','Lineage to source and section','Wording vector (dedup) · meaning vector (search)'], insideLbl:'What each record holds',
+      cols:[['Why it matters','One approval updates every channel. Superseded versions stay for the record but are never served.'],['Today in the demo','Chroma in memory: 31 records after approvals, 30 published and 1 superseded.'],['Production','A persistent vector database; decisions and saved state move to Postgres as an append-only audit table.']], twin:['c_copies']},
+    f_search: {k:'auto', side:'Future state', badge:'Phase 2', title:'Search', lead:'Retrieval over approved units only, for the advocate at the desk and the assistant at answer time.',
+      inside:['Expand Humana-speak','Filter to the role’s knowledge bases','Rank: keyword and meaning','Cite the unit, or decline'], insideLbl:'Inside the component',
+      cols:[['Behaviour','Cites the unit it answers from; says "no approved answer" when it has none, and logs the question.'],['Measured','A golden set of questions with the expected unit, before anyone relies on it.'],['In the demo','The role filter already runs on the store: a pharmacy advocate sees the pricing disclaimer; an insurance advocate never does.']], twin:['c_search']},
+    f_api: {k:'store', side:'Future state', badge:'Phase 3', title:'Channel API', lead:'One interface serving the same approved unit to every channel.',
+      inside:['Advocate assist','Member chat','Voice bot','Web and outbound'], insideLbl:'Consumers',
+      cols:[['Rule','Verbatim units are returned exactly, never generated; a model may write around them.'],['Why later','The other AI use cases wait on grounded, citable knowledge; they plug in once governance and search hold.'],['Measure','Every channel cites the same unit ID and version for the same question.']], twin:['c_copies']},
+    f_out: {k:'auto', side:'Future state', title:'One approved answer everywhere', lead:'The same search returns one approved unit, with its citation and the channels that use it.',
+      inside:['Voice bot: unit v2','Advocate: unit v2','Web: unit v2'], insideLbl:'One question, one answer',
+      cols:[['When Legal revises','Every channel picks up the new version at once, with no second edit.'],['In the demo','Legal adopts the outreach recording disclosure: it becomes v2, and an inbound advocate search returns v2.'],['Compliance','Any answer traces back to its unit, source section, approver and timestamp.']], twin:['c_out']},
+    f_loop: {k:'human', side:'Future state', badge:'Phase 2', title:'Gap queue and drift flags', lead:'What search cannot answer, and what has gone stale, becomes the author\'s work.',
+      inside:['Cluster empty searches','Propose a unit','Author decides: write it or fix the process','Approve and publish'], insideLbl:'The loop',
+      cols:[['AI decides','Clusters the questions that returned no answer; flags units whose source changed.'],['Human decides','Whether a top question deserves a written answer or a fix to the process that causes it.'],['Principle','Read search logs as a content backlog before tuning ranking.']], twin:['c_gap']}
+  };
+  var cols = document.querySelectorAll('[data-cf]');
+  function el(tag, cls, text) { var n = document.createElement(tag); if (cls) n.className = cls; if (text != null) n.textContent = text; return n; }
+  function colOf(id) { return document.querySelector('[data-c="' + id + '"]').closest('[data-cf]'); }
+  function show(id, focus) {
+    var d = C[id], col = colOf(id), zoom = col.parentElement.querySelector('.zoom');
+    var comps = col.querySelectorAll('[data-c]');
+    col.classList.toggle('focus', !!focus);
+    comps.forEach(function (c) {
+      var on = focus && c.dataset.c === id;
+      c.classList.toggle('sel', on);
+      c.setAttribute('aria-pressed', String(on));
+    });
+    zoom.replaceChildren();
+    var top = el('div', 'ztop');
+    var kindLabel = {pain:'Pain today', auto:'AI does it', human:'Human decides', store:'Store or system'}[d.k];
+    var k = el('span', 'kind', kindLabel); k.dataset.k = d.k; top.append(k);
+    if (d.badge) top.append(el('span', 'kind', d.badge));
+    zoom.append(top, el('h3', null, d.title), el('p', 'lead', d.lead));
+    var ins = el('div', 'inside'); ins.append(el('div', 'lbl', d.insideLbl));
+    d.inside.forEach(function (st, i) { if (i) ins.append(el('span', 'to', '→')); var b = el('div', 'step'); b.append(el('b', null, st)); ins.append(b); });
+    zoom.append(ins);
+    var g = el('div', 'zgrid');
+    d.cols.forEach(function (c) { var w = el('div'); w.append(el('h4', null, c[0]), el('p', null, c[1])); g.append(w); });
+    zoom.append(g);
+    if (d.twin.length) {
+      var other = colOf(d.twin[0]).dataset.cf;
+      var tl = el('div', 'twinlink');
+      tl.append(document.createTextNode((other === 'future' ? 'Replaced in the future state by ' : 'Replaces, from the current state, ')));
+      d.twin.forEach(function (t, i) {
+        if (i) tl.append(document.createTextNode(' and '));
+        var b = el('button', null, C[t].title + ' →'); b.type = 'button';
+        b.addEventListener('click', function () { window.openTab(other); show(t, true); var st = colOf(t).parentElement; window.scrollTo(0, st.getBoundingClientRect().top + window.scrollY - 60); });
+        tl.append(b);
+      });
+      zoom.append(tl);
+    }
+    if (focus && !window.matchMedia('(min-width:1100px)').matches) {
+      var r = zoom.getBoundingClientRect();
+      if (r.top > window.innerHeight - 120 || r.top < 0) zoom.scrollIntoView({block:'start', behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth'});
+    }
+  }
+  cols.forEach(function (col) {
+    col.addEventListener('click', function (ev) {
+      var b = ev.target.closest('[data-c]');
+      if (!b) return;
+      if (b.classList.contains('sel')) { show(b.dataset.c, false); return; }
+      show(b.dataset.c, true);
+    });
+  });
+  show('c_copies', false);
+  show('f_store', false);
+})();
+
+// ---- ontology graph (schema / instance) ----
+(function () {
+  var host = document.getElementById('ograph'), panel = document.getElementById('opanel');
+  if (!host) return;
+  var V = {
+    schema: {
+      first: 'ku',
+      nodes: [
+        ['ku', 560, 340, 'Knowledge Unit', '↺ supersedes · variant · conflicts with', 'core', 'The smallest piece of knowledge that is authored, approved, versioned and served on its own: a verbatim line, a rule, a fact, a script step. Units also link to each other: supersedes (a new version), duplicate of, variant of, and conflicts with.', 'AI extracts; author confirms'],
+        ['cc', 160, 80, 'Compliance Class', 'legal · clinical · CMS · ops', '', 'Risk level of a unit. Decides which approval gate it must pass.', 'AI recommends; author confirms'],
+        ['ut', 390, 80, 'Unit Type', 'verbatim · rule · fact · step', '', 'What kind of knowledge it is. Verbatim units are shown word for word and never generated.', 'AI decides'],
+        ['tp', 650, 80, 'Topic', 'pharmacy.mail_order …', '', 'What the unit is about, in two levels. Drafted by clustering and approved by SMEs.', 'AI recommends; author confirms'],
+        ['lx', 910, 80, 'Lexicon Term', 'PA · MAPD · donut hole', '', 'Humana-speak: acronyms, synonyms and misspellings mapped to a topic, used to expand search queries.', 'AI proposes from search logs; author confirms'],
+        ['uq', 780, 215, 'Unanswered Question', 'from search logs', '', 'A search with no approved answer. Clustered into the author\'s gap queue, where it can propose a new unit.', 'System logs; AI clusters'],
+        ['ro', 990, 215, 'Role', 'pharmacy advocate …', 'human', 'A person or system that reads or changes knowledge. Access is granted by a person, never inferred.', 'Human only'],
+        ['sd', 150, 340, 'Source Document', 'section · span', '', 'The document a unit came from. Stays the source of record.', 'Captured at upload'],
+        ['ap', 150, 480, 'Approval Record', 'who · when · ID', 'human', 'Who approved which version of a unit, when, under which approval ID.', 'Human only'],
+        ['ls', 250, 620, 'Lifecycle Status', 'draft → published → stale', '', 'Where a unit is in its life. Only published units are searchable or served.', 'System, from human actions and drift checks'],
+        ['kb', 990, 340, 'Knowledge Base', 'pharmacy · insurance', '', 'A governed collection of units with an owner. The boundary for access control.', 'AI recommends; author confirms'],
+        ['ch', 990, 480, 'Channel', 'desk · chat · voice · web', '', 'Where a unit reaches people.', 'AI recommends; author confirms'],
+        ['lb', 490, 620, 'Line of Business', 'MAPD · PDP · DSNP', '', 'The product a unit applies to.', 'AI extracts; author confirms'],
+        ['py', 690, 620, 'Plan Year', '2026 · 2027', '', 'The benefit year. Drives expiry and staleness.', 'AI extracts; author confirms'],
+        ['ju', 890, 620, 'Jurisdiction', 'state or market', '', 'Where a unit applies, when it is not national.', 'AI extracts; author confirms']
+      ],
+      edges: [
+        ['ku','cc','compliance class'],['ku','ut','has type'],['ku','tp','about'],['lx','tp','synonym of'],['uq','tp','about'],['uq','ku','proposes'],
+        ['ku','sd','derived from'],['ku','ap','approved by','human'],['ku','ls','has status'],['ku','kb','belongs to'],['ro','kb','can read','human'],
+        ['ku','ch','served via'],['ku','lb','applies to'],['ku','py','applies to'],['ku','ju','applies to']
+      ]
+    },
+    instance: {
+      first: 'u6',
+      nodes: [
+        ['u6', 560, 340, 'RX§6.V1 Pricing disclaimer', '"Before I share any prices…"', 'core', 'The approved Rx pricing disclaimer from RX-EDU-SCRIPT v3.2, section 6. A Knowledge Unit.', 'Extracted by AI; approved by Legal'],
+        ['t1', 380, 80, 'verbatim_legal', 'Unit Type', '', 'Marked "Verbatim (Legal)" in the source, so it must be read word for word and any change goes to Legal by rule.', 'AI decides'],
+        ['c1', 150, 80, 'legal', 'Compliance Class', '', 'Legal wording, so Legal is the approval gate.', 'Follows from the unit type'],
+        ['p1', 640, 80, 'pharmacy.pricing', 'Topic', '', 'Matched on "prices", "cost", "disclaimer" against the ontology keywords.', 'AI recommends; author confirms'],
+        ['l1', 930, 80, '"disclaimor", "Rx price"', 'Lexicon Terms', '', 'A misspelling and a shorthand advocates type. Both expand to this topic in search.', 'AI proposes from search logs'],
+        ['d1', 150, 340, 'RX-EDU-SCRIPT v3.2 §6', 'Source Document', '', 'Inbound Rx education script, author Dana Whitfield, owner Pharmacy Knowledge Operations, effective 2026-10-01.', 'Captured at upload'],
+        ['a1', 150, 480, 'LGL-2026-118 · Legal', 'Approval Record', 'human', 'Legal approval on 2026-09-12. In the approvals run, David Reyes kept this wording when the outreach version tried to change it.', 'Human only'],
+        ['s1', 260, 620, 'published', 'Lifecycle Status', '', 'Live: searchable and served to channels.', 'System'],
+        ['k1', 990, 340, 'Pharmacy KB', 'Knowledge Base', '', 'Owned by Pharmacy Knowledge Ops.', 'AI recommends; author confirms'],
+        ['r1', 990, 200, 'Pharmacy advocate', 'Role', 'human', 'Can read the Pharmacy knowledge base, so this unit can come back in their search.', 'Human only'],
+        ['r2', 990, 500, 'Insurance advocate', 'Role', 'human', 'Cannot read the Pharmacy knowledge base, so this unit is filtered out before retrieval and can never appear in their results.', 'Human only'],
+        ['h1', 770, 490, 'Advocate desktop', 'Channel', '', 'Served on the advocate desktop today; the same unit will feed chat and voice in Phase 3.', 'AI recommends'],
+        ['b1', 500, 620, 'MAPD, PDP', 'Line of Business', '', 'Read from the script\'s purpose section.', 'AI extracts'],
+        ['y1', 720, 620, '2027', 'Plan Year', '', 'From the document header. A 2026 unit on the same topic would be a variant or stale.', 'AI extracts'],
+        ['o7', 790, 215, 'PHARM§7.V1 Outreach disclaimer', 'Knowledge Unit (draft)', 'conflict', 'The outreach script\'s version drops "drug payment stage", "Extra Help" and "confirmed when filled". Ingestion flagged it; Legal rejected it, so v3.2 stays live.', 'AI flags; Legal decides']
+      ],
+      edges: [
+        ['u6','c1','compliance class'],['u6','t1','has type'],['u6','p1','about'],['l1','p1','synonym of'],
+        ['u6','d1','derived from (§6)'],['u6','a1','approved by','human'],['u6','s1','has status'],['u6','k1','belongs to'],
+        ['r1','k1','can read','human'],['r2','k1','no access','none'],['u6','h1','served via'],['u6','b1','applies to'],['u6','y1','applies to'],
+        ['o7','u6','legal wording differs','conflict']
+      ]
+    }
+  };
+  function esc(t) { return String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/"/g,'&quot;'); }
+  function width(label, sub) { return Math.max(110, Math.min(250, Math.max(label.length * 7.6, sub.length * 6.6) + 26)); }
+  function draw(view) {
+    var g = V[view], pos = {};
+    g.nodes.forEach(function (n) { pos[n[0]] = n; });
+    var out = '<svg viewBox="0 0 1130 680" role="img" aria-label="' + (view === 'schema' ? 'Ontology schema graph' : 'Instance graph for the Rx pricing disclaimer') + '">';
+    g.edges.forEach(function (e) {
+      var a = pos[e[0]], b = pos[e[1]], cls = e[3] || '';
+      if (cls === 'self') {
+        out += '<path class="g-edge" fill="none" d="M ' + (a[1]-60) + ' ' + (a[2]+30) + ' C ' + (a[1]-90) + ' ' + (a[2]+120) + ', ' + (a[1]+90) + ' ' + (a[2]+120) + ', ' + (a[1]+60) + ' ' + (a[2]+30) + '"/>';
+        out += '<text class="g-elabel" x="' + a[1] + '" y="' + (a[2]+112) + '" text-anchor="middle">' + esc(e[2]) + '</text>';
+        return;
+      }
+      out += '<line class="g-edge ' + cls + '" x1="' + a[1] + '" y1="' + a[2] + '" x2="' + b[1] + '" y2="' + b[2] + '"/>';
+      out += '<text class="g-elabel ' + cls + '" x="' + ((a[1]+b[1])/2) + '" y="' + ((a[2]+b[2])/2 - 4) + '" text-anchor="middle">' + esc(e[2]) + '</text>';
+    });
+    g.nodes.forEach(function (n) {
+      var w = width(n[3], n[4]), h = n[5] === 'core' ? 62 : 48;
+      out += '<g class="g-node ' + n[5] + '" data-g="' + n[0] + '" tabindex="0" role="button" aria-label="' + esc(n[3]) + '">' +
+        '<rect x="' + (n[1]-w/2) + '" y="' + (n[2]-h/2) + '" width="' + w + '" height="' + h + '" rx="7"/>' +
+        '<text x="' + n[1] + '" y="' + (n[2]-3) + '" text-anchor="middle">' + esc(n[3]) + '</text>' +
+        '<text class="s" x="' + n[1] + '" y="' + (n[2]+14) + '" text-anchor="middle">' + esc(n[4]) + '</text></g>';
+    });
+    host.innerHTML = out + '</svg>';
+    select(view, g.first);
+  }
+  function select(view, id) {
+    var n = V[view].nodes.filter(function (x) { return x[0] === id; })[0];
+    host.querySelectorAll('.g-node').forEach(function (g) { g.classList.toggle('on', g.dataset.g === id); });
+    var kind = n[5] === 'human' ? 'human' : n[5] === 'core' ? 'auto' : n[5] === 'conflict' ? 'pain' : 'store';
+    panel.dataset.kind = kind;
+    panel.replaceChildren();
+    var mk = function (t, c, x) { var e = document.createElement(t); if (c) e.className = c; e.textContent = x; return e; };
+    panel.append(mk('span', 'kind', (view === 'schema' ? 'Class' : n[4])), mk('h3', null, n[3]), mk('p', 'lead', n[6]));
+    var f = document.createElement('div'); f.className = 'field'; f.append(mk('h4', null, 'Who sets it'), mk('p', null, n[7])); panel.append(f);
+    var links = V[view].edges.filter(function (e) { return (e[0] === id || e[1] === id) && e[3] !== 'self'; }).map(function (e) {
+      var other = e[0] === id ? e[1] : e[0], on = V[view].nodes.filter(function (x) { return x[0] === other; })[0][3];
+      return (e[0] === id ? '→ ' + e[2] + ' → ' + on : on + ' → ' + e[2] + ' → this');
+    });
+    if (links.length) { var f2 = document.createElement('div'); f2.className = 'field'; f2.append(mk('h4', null, 'Links')); links.forEach(function (l) { f2.append(mk('p', null, l)); }); panel.append(f2); }
+  }
+  var current = 'schema';
+  host.addEventListener('click', function (ev) { var g = ev.target.closest('.g-node'); if (g) select(current, g.dataset.g); });
+  host.addEventListener('keydown', function (ev) { if ((ev.key === 'Enter' || ev.key === ' ') && ev.target.closest('.g-node')) { ev.preventDefault(); select(current, ev.target.closest('.g-node').dataset.g); } });
+  document.querySelectorAll('[data-view]').forEach(function (b) {
+    b.addEventListener('click', function () {
+      current = b.dataset.view;
+      document.querySelectorAll('[data-view]').forEach(function (x) { x.setAttribute('aria-pressed', String(x === b)); });
+      draw(current);
+    });
+  });
+  draw('schema');
+})();
+</script>
+</body>
+</html>
