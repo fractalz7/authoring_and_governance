@@ -241,6 +241,60 @@ td code{font:500 12.5px var(--mono)}
 .note2{font-size:13px;color:var(--ink-2);margin:12px 0 0}
 @media (max-width:639px){.brow.b3,.brow.b2w{grid-template-columns:minmax(0,1fr)}}
 
+
+/* screen sketches */
+.sketch{scroll-margin-top:64px;margin:0 0 18px;background:var(--surface);border:1px dashed var(--ink-2);border-radius:10px;padding:12px 14px 16px}
+.sketch figcaption{display:flex;flex-wrap:wrap;align-items:baseline;gap:10px;margin:0 0 10px}
+.sketch .ph{font:500 10.5px/1 var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--ink-2);border:1px dashed var(--ink-2);padding:3px 6px;border-radius:3px}
+.sk-t{font:600 24px/1 'Caveat',var(--sans)}
+.sk-who{font-size:12.5px;color:var(--ink-2)}
+.sk2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
+.wf{border:1.5px solid var(--ink-2);border-radius:8px;overflow:hidden;font-size:13px;background:var(--bg)}
+.wf-bar{display:flex;justify-content:space-between;gap:8px;padding:8px 12px;background:var(--store-tint);border-bottom:1.5px solid var(--ink-2)}
+.wf-bar span{color:var(--ink-2);font-size:12px}
+.wf-split{display:grid;grid-template-columns:minmax(180px,.8fr) minmax(0,2fr)}
+.wf-list{list-style:none;margin:0;padding:0;border-right:1.5px solid var(--ink-2)}
+.wf-list li{padding:8px 10px;border-bottom:1px solid var(--line);display:flex;flex-direction:column;gap:3px}
+.wf-list li.on{background:var(--surface);box-shadow:inset 3px 0 0 var(--focus)}
+.wf-detail{padding:10px 12px;display:flex;flex-direction:column;gap:10px;background:var(--surface)}
+.wf-row{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.wf-row.end{justify-content:flex-end}
+.wf-cols{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.wf .lbl{display:block;font:500 10.5px/1.3 var(--mono);letter-spacing:.05em;text-transform:uppercase;color:var(--ink-2);margin-bottom:3px}
+.wf-row .lbl{display:inline;margin:0 4px 0 0}
+.wf .q{margin:0;padding:8px 10px;border-left:3px solid var(--line-strong);background:var(--bg);font-family:Georgia,'Times New Roman',serif;font-size:13px;line-height:1.5}
+.wf .q.big{font-size:14px}
+.wf del{background:var(--pain-tint);color:var(--pain);text-decoration:line-through}
+.wf ins{background:var(--auto-tint);color:var(--auto-ink);text-decoration:none}
+.wf .t{font-style:normal;font:500 10.5px/1 var(--mono);padding:3px 6px;border-radius:9px;border:1px solid var(--line-strong);width:fit-content;white-space:nowrap}
+.wf .t.legal{background:var(--human-tint);color:var(--human-ink);border-color:var(--human)}
+.wf .t.conflict{background:var(--pain-tint);color:var(--pain);border-color:var(--pain)}
+.wf .t.stale{background:#EFE9F8;color:#4F2F78;border-color:#7A4FA3}
+.wf .t.new{background:var(--store-tint);color:var(--ink-2)}
+.wf .t.dup{background:var(--store-tint);color:var(--ink-2)}
+.wf .t.var{background:var(--auto-tint);color:var(--auto-ink);border-color:var(--auto)}
+.wf .chip{font-style:normal;font-size:12px;padding:2px 8px;border:1px solid var(--line-strong);border-radius:10px;background:var(--bg)}
+.wf-input{border:1.5px dashed var(--line-strong);border-radius:6px;padding:8px 10px;color:var(--ink-2);font-style:italic}
+.wf .btn{display:inline-block;padding:6px 12px;border:1.5px solid var(--ink);border-radius:6px;font-weight:500;font-size:12.5px;background:var(--surface)}
+.wf .btn.pri{background:var(--ink);color:var(--bg)}
+.wf .btn.sm{padding:3px 8px;font-size:12px;margin-left:6px}
+.wf-drop{margin:10px 12px 0;padding:12px;border:1.5px dashed var(--ink-2);border-radius:6px;text-align:center;color:var(--ink-2)}
+.wf-meta{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px 12px;margin:10px 12px 0;padding:10px;background:var(--surface);border:1px solid var(--line);border-radius:6px}
+.wf-sum{margin:8px 12px 0;padding:8px 10px;background:var(--surface);border:1px solid var(--line);border-radius:6px}
+.wf > .wf-row{margin:8px 12px 0}
+.wf-tab{margin:8px 12px 0;width:calc(100% - 24px);border-collapse:collapse;background:var(--surface);font-size:12.5px}
+.wf-tab td{padding:6px 8px;border-bottom:1px solid var(--line)}
+.wf-tab tr.v td:first-child{box-shadow:inset 4px 0 0 var(--human)}
+.wf > .wf-row.end{margin:10px 12px 12px}
+.wf-search{margin:10px 12px 0;padding:9px 12px;border:1.5px solid var(--ink-2);border-radius:20px;background:var(--surface)}
+.wf-search.sm{margin-top:12px}
+.hint2{display:block;font:400 11px var(--mono);color:var(--ink-2);margin-top:2px}
+.wf-ans{margin:8px 12px 0;padding:10px;background:var(--surface);border:1px solid var(--line);border-radius:6px;display:flex;flex-direction:column;gap:8px}
+.wf .cite{margin:0;font:400 11.5px/1.4 var(--mono);color:var(--ink-2)}
+.wf-none{margin:8px 12px 12px;padding:10px;border:1.5px dashed var(--pain);border-radius:6px;background:var(--pain-tint)}
+.wf .mono{font:400 11.5px var(--mono);color:var(--ink-2)}
+@media (max-width:820px){.sk2,.wf-split,.wf-cols{grid-template-columns:minmax(0,1fr)}.wf-list{border-right:0;border-bottom:1.5px solid var(--ink-2)}}
+
 /* tabs */
 .tabs{position:sticky;top:0;z-index:5;display:flex;gap:2px;overflow-x:auto;margin:28px calc(-1 * max(16px,env(safe-area-inset-left,0px))) 0;padding:8px max(16px,env(safe-area-inset-left,0px)) 0;background:var(--bg);border-bottom:1px solid var(--line-strong);scrollbar-width:thin}
 .tabs [role="tab"]{flex:0 0 auto;font:500 13.5px/1.2 var(--sans);color:var(--ink-2);background:none;border:0;border-bottom:3px solid transparent;padding:10px 12px 9px;cursor:pointer;white-space:nowrap}
@@ -259,6 +313,7 @@ td code{font:500 12.5px var(--mono)}
 
 /* current vs future component diagrams */
 .toggle.small{padding:5px 10px;font-size:12.5px;margin-left:auto}
+.jumpbtn{margin:16px 0 0;margin-left:0}
 .cf{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px;align-items:start}
 .cf-col{border-radius:12px;padding:14px 14px 16px;display:flex;flex-direction:column;border:1px solid var(--line)}
 .cf-col.cur{background:color-mix(in srgb,var(--pain-tint) 35%,var(--surface))}
@@ -653,6 +708,77 @@ td code{font:500 12.5px var(--mono)}
       <aside class="panel" aria-live="polite"></aside>
     </div>
 
+
+    <h3 class="bsub" id="sketches">Screen sketches</h3>
+    <p class="note2" style="margin:0 0 12px">Low-fidelity proposals to react to, not designs. Content comes from the demo run.</p>
+
+    <figure class="sketch" id="sk-review">
+      <figcaption><span class="ph">P1 · proposal</span><span class="sk-t">Review screen</span><span class="sk-who">Legal and authors</span></figcaption>
+      <div class="wf">
+        <div class="wf-bar"><b>Review queue</b><span>Signed in as David Reyes · Legal</span></div>
+        <div class="wf-split">
+          <ul class="wf-list" aria-label="Queue">
+            <li class="on"><b>Pricing disclaimer</b><i class="t legal">legal wording differs</i></li>
+            <li><b>Recording disclosure</b><i class="t legal">legal wording differs</i></li>
+            <li><b>Closing</b><i class="t legal">legal wording differs</i></li>
+            <li><b>Mail-order pharmacy</b><i class="t conflict">contradiction</i></li>
+            <li><b>Drug payment stages</b><i class="t stale">stale</i></li>
+            <li><b>Voicemail script</b><i class="t new">new unit</i></li>
+            <li><b>Do-not-call requests</b><i class="t new">new unit</i></li>
+          </ul>
+          <div class="wf-detail">
+            <div class="wf-row"><i class="t legal">legal wording differs</i><span class="mono">PHARM-OUTREACH-SCRIPT§7.V1 ↔ RX-EDU-SCRIPT§6.V1</span></div>
+            <div class="wf-cols">
+              <div><span class="lbl">Approved · v3.2 · LGL-2026-118</span><p class="q">"Before I share any prices, please know that your cost may vary depending on your plan, the pharmacy you use, <del>the drug payment stage you are in, and whether you qualify for Extra Help</del>. Prices and coverage are subject to change <del>and are confirmed when your prescription is filled</del>."</p></div>
+              <div><span class="lbl">Incoming · outreach v1.7 · Member Outreach</span><p class="q">"<ins>Please note that</ins> your costs may vary based on your plan and the pharmacy you use. Prices and coverage are subject to change."</p></div>
+            </div>
+            <div class="wf-row"><span class="lbl">Used in</span><i class="chip">Advocate desktop</i><i class="chip">Voice bot</i><i class="chip">Web</i></div>
+            <div class="wf-input">Note: v3.2 wording stands. Outreach script must use it.</div>
+            <div class="wf-row end"><span class="btn">Reject: keep approved</span><span class="btn pri">Approve new wording as v2</span></div>
+          </div>
+        </div>
+      </div>
+    </figure>
+
+    <div class="sk2">
+      <figure class="sketch" id="sk-upload">
+        <figcaption><span class="ph">P1 · proposal</span><span class="sk-t">Author upload</span><span class="sk-who">Knowledge Ops authors</span></figcaption>
+        <div class="wf">
+          <div class="wf-bar"><b>Upload a document</b><span>Maya Ortiz · Author</span></div>
+          <div class="wf-drop">PHARM-OUTREACH-SCRIPT_v1.7.md · uploaded · 21 units found</div>
+          <div class="wf-meta">
+            <div><span class="lbl">Author · from doc</span>Marcus Lee</div>
+            <div><span class="lbl">Owner · from doc</span>Member Outreach Ops</div>
+            <div><span class="lbl">Version</span>v1.7 · plan year 2026</div>
+            <div><span class="lbl">Category · inferred</span>Call script · outbound</div>
+          </div>
+          <p class="wf-sum"><span class="lbl">Summary</span>Outbound script for outreach advocates on MAPD and PDP plans. Covers 11 topics in 21 units, 6 of them legal verbatim.</p>
+          <div class="wf-row"><i class="t dup">2 duplicates</i><i class="t legal">3 legal wording</i><i class="t conflict">1 contradiction</i><i class="t stale">1 stale</i><i class="t var">4 variants</i><i class="t new">8 new</i></div>
+          <table class="wf-tab">
+            <tr class="v"><td>§7.V1</td><td>Pricing disclaimer</td><td><i class="t legal">to Legal</i></td></tr>
+            <tr><td>§10.G</td><td>Mail-order pharmacy</td><td><i class="t conflict">blocked</i></td></tr>
+            <tr><td>§8.G</td><td>Drug tiers</td><td><i class="t var">variant · 2026</i></td></tr>
+          </table>
+          <div class="wf-row end"><span class="btn pri">Submit for review</span></div>
+        </div>
+      </figure>
+
+      <figure class="sketch" id="sk-search">
+        <figcaption><span class="ph">P2 · proposal</span><span class="sk-t">Advocate search</span><span class="sk-who">Pharmacy advocate on a call</span></figcaption>
+        <div class="wf">
+          <div class="wf-bar"><b>Ask</b><span>Pharmacy advocate · desktop</span></div>
+          <div class="wf-search">rx pricing disclaimor<span class="hint2">searching as "pricing disclaimer"</span></div>
+          <div class="wf-ans">
+            <div class="wf-row"><i class="t legal">Read word for word</i><span class="mono">Approved · v1</span></div>
+            <p class="q big">"Before I share any prices, please know that your cost may vary depending on your plan, the pharmacy you use, the drug payment stage you are in, and whether you qualify for Extra Help. Prices and coverage are subject to change and are confirmed when your prescription is filled."</p>
+            <p class="cite">Source: RX-EDU-SCRIPT v3.2 §6 · LGL-2026-118 · Pharmacy KB · also used by voice bot and web</p>
+          </div>
+          <div class="wf-search sm">does mail order ship to a PO box?</div>
+          <div class="wf-none"><b>No approved answer.</b> Logged for Knowledge Ops. <span class="btn sm">Escalate to the Pharmacy Help Desk</span></div>
+        </div>
+      </figure>
+    </div>
+
     <div class="three" style="margin-top:22px">
       <div class="col stickycol req"><h3>Product requirements (non-negotiable)</h3><ul>
         <li>Roles are enforced on the server, from sign-in</li>
@@ -786,9 +912,9 @@ td code{font:500 12.5px var(--mono)}
     g7: e('store', 'Ontology · output', 'Ontology v1', 'A versioned file that the rest of the platform reads.', [['What it drives', 'Unit type decides the approval gate; topic decides the knowledge base; the knowledge base decides who can read it in search; the lexicon expands search queries.'], ['In the demo', 'knowledge_ontology_v1.json, treated as a finished Phase 0 step.']]),
     g8: e('auto', 'Ontology · AI and human', 'Refresh', 'The ontology is re-checked on a schedule and when the content changes.', [['AI', 'Re-clusters new documents and search logs and proposes changes: new topics, new synonyms, topics nobody uses any more.'], ['Human', 'Every change goes through the same review and becomes a new version, so tags can be re-applied consistently.']]),
 
-    a_review: e('p1', 'Phase 1 · front end', 'Review screen', 'Where Legal and authors work their queues.', [['What it shows', 'Each paused finding with the side-by-side diff, the reason it was flagged, and the channels the unit reaches. Approve or reject with a note.'], ['Replaces', 'The decide() cell in approvals_book.'], ['Requirement', 'The screen never sends a role; the server takes it from sign-in.']]),
-    a_upload: e('p1', 'Phase 1 · front end', 'Author upload', 'Where authors bring documents and revisions in.', [['What it shows', 'The header card (author, owner, uploader, time, version, category), the two-sentence summary, the units table and the findings, as in ingestion_book.'], ['Behaviour', 'Upload returns at once with a job; results appear when the background job finishes.']]),
-    a_search_ui: e('p2', 'Phase 2 · front end and callers', 'Advocate search and channel callers', 'The advocate panel, and the chat, voice and web services that call the same endpoint.', [['What it shows', 'The answer, the unit it cites, its version, or "no approved answer" when there is none.'], ['Requirement', 'Same unit, same version and same citation for the same question in every channel.']]),
+    a_review: e('p1', 'Phase 1 · front end', 'Review screen', 'Where Legal and authors work their queues.', [['What it shows', 'Each paused finding with the side-by-side diff, the reason it was flagged, and the channels the unit reaches. Approve or reject with a note.'], ['Replaces', 'The decide() cell in approvals_book.'], ['Requirement', 'The screen never sends a role; the server takes it from sign-in.'], ['Sketch', 'See the review screen sketch below the board.']]),
+    a_upload: e('p1', 'Phase 1 · front end', 'Author upload', 'Where authors bring documents and revisions in.', [['What it shows', 'The header card (author, owner, uploader, time, version, category), the two-sentence summary, the units table and the findings, as in ingestion_book.'], ['Behaviour', 'Upload returns at once with a job; results appear when the background job finishes.'], ['Sketch', 'See the author upload sketch below the board.']]),
+    a_search_ui: e('p2', 'Phase 2 · front end and callers', 'Advocate search and channel callers', 'The advocate panel, and the chat, voice and web services that call the same endpoint.', [['What it shows', 'The answer, the unit it cites, its version, or "no approved answer" when there is none.'], ['Requirement', 'Same unit, same version and same citation for the same question in every channel.'], ['Sketch', 'See the advocate search sketch below the board, including the "no approved answer" case.']]),
     a_shell: e('opt', 'Option for the eng lead', 'Front-end shell', 'One way: a Streamlit pilot first, React once the screens settle.', [['Why Streamlit first', 'Days, not weeks, to put a real review screen in front of Legal and learn what they need.'], ['Why it is low-risk', 'The shell only calls the API, so swapping it later costs nothing on the back end.'], ['Defer to', 'The engineering lead and Humana front-end standards.']]),
     a_sso: e('req', 'Product requirement', 'Sign-in decides the role', 'Who may approve what is enforced on the server.', [['Why', 'In the notebook, decide() trusts the role it is given. In a service, the role comes from the sign-in token (company groups mapped to roles), and the role check runs on the server.'], ['Non-negotiable', 'A client can never claim to be Legal.']]),
     a_api: e('p1', 'Phase 1 and 2 · service', 'API service', 'Thin routes over one package; the OpenAPI spec gives the front end and channel teams a typed client.', [['Phase 1 endpoints', 'POST /documents, GET /jobs/{id}, GET /review-queue, POST /findings/{id}/decision, GET /units/{id}, GET /audit.'], ['Phase 2 endpoints', 'POST /search, GET /gaps, POST /documents/{id}/revisions.'], ['Suggested stack', 'FastAPI, for discussion with the engineering lead.']]),
@@ -1097,6 +1223,27 @@ td code{font:500 12.5px var(--mono)}
     });
   });
   draw('schema');
+})();
+
+// ---- whiteboard: UI notes jump to their sketch ----
+(function () {
+  var map = {a_review: 'sk-review', a_upload: 'sk-upload', a_search_ui: 'sk-search'};
+  document.querySelectorAll('#arch [data-id]').forEach(function (n) {
+    if (!map[n.dataset.id]) return;
+    n.addEventListener('dblclick', function () { document.getElementById(map[n.dataset.id]).scrollIntoView({block: 'start', behavior: 'smooth'}); });
+  });
+  var panel = document.querySelector('#arch .panel');
+  panel.addEventListener('click', function (ev) {
+    var b = ev.target.closest('[data-jump]'); if (!b) return;
+    document.getElementById(b.dataset.jump).scrollIntoView({block: 'start', behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth'});
+  });
+  var obs = new MutationObserver(function () {
+    var sel = document.querySelector('#arch [data-id][aria-pressed="true"]');
+    if (!sel || !map[sel.dataset.id] || panel.querySelector('[data-jump]')) return;
+    var b = document.createElement('button'); b.type = 'button'; b.className = 'toggle small jumpbtn'; b.dataset.jump = map[sel.dataset.id]; b.textContent = 'Show the sketch ↓';
+    panel.append(b);
+  });
+  obs.observe(panel, {childList: true});
 })();
 </script>
 </body>
