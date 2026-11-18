@@ -295,6 +295,21 @@ td code{font:500 12.5px var(--mono)}
 .wf .mono{font:400 11.5px var(--mono);color:var(--ink-2)}
 @media (max-width:820px){.sk2,.wf-split,.wf-cols{grid-template-columns:minmax(0,1fr)}.wf-list{border-right:0;border-bottom:1.5px solid var(--ink-2)}}
 
+
+/* roles */
+.rgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:8px}
+.pm{display:inline-block;font:500 11px/1 var(--mono);padding:3px 7px;border-radius:9px;white-space:nowrap}
+.pm.y{background:var(--auto-tint);color:var(--auto-ink);border:1px solid var(--auto)}
+.pm.n{color:var(--ink-2)}
+.pm.p{background:var(--human-tint);color:var(--human-ink);border:1px dashed var(--human)}
+.pm.d{background:var(--ink);color:var(--bg)}
+.pmtab td{vertical-align:middle}
+.matrix th{white-space:nowrap}
+.matrix td:first-child{min-width:230px}
+.matrix td:not(:first-child),.matrix th:not(:first-child){text-align:center}
+.two-tables{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+@media (max-width:820px){.two-tables{grid-template-columns:minmax(0,1fr)}}
+
 /* tabs */
 .tabs{position:sticky;top:0;z-index:5;display:flex;gap:2px;overflow-x:auto;margin:28px calc(-1 * max(16px,env(safe-area-inset-left,0px))) 0;padding:8px max(16px,env(safe-area-inset-left,0px)) 0;background:var(--bg);border-bottom:1px solid var(--line-strong);scrollbar-width:thin}
 .tabs [role="tab"]{flex:0 0 auto;font:500 13.5px/1.2 var(--sans);color:var(--ink-2);background:none;border:0;border-bottom:3px solid transparent;padding:10px 12px 9px;cursor:pointer;white-space:nowrap}
@@ -389,6 +404,7 @@ td code{font:500 12.5px var(--mono)}
     <button type="button" role="tab" id="t-roadmap" data-tab="roadmap" aria-controls="roadmap" aria-selected="false" tabindex="-1">Roadmap</button>
     <button type="button" role="tab" id="t-arch" data-tab="arch" aria-controls="arch" aria-selected="false" tabindex="-1">Architecture whiteboard</button>
     <button type="button" role="tab" id="t-rai" data-tab="rai" aria-controls="rai" aria-selected="false" tabindex="-1">Responsible AI</button>
+    <button type="button" role="tab" id="t-roles" data-tab="roles" aria-controls="roles" aria-selected="false" tabindex="-1">Roles and authorizations</button>
     <button type="button" role="tab" id="t-artifacts" data-tab="artifacts" aria-controls="artifacts" aria-selected="false" tabindex="-1">Demo artifacts</button>
   </nav>
 
@@ -838,6 +854,125 @@ td code{font:500 12.5px var(--mono)}
     </div>
   </section>
 
+  <!-- ROLES -->
+  <section class="sec tabpanel" id="roles" role="tabpanel" aria-labelledby="t-roles" data-sec="roles" data-first="r_author">
+    <h2>Roles and authorizations</h2>
+    <div class="callout"><b>Proposed definitions, to confirm with Compliance and the engineering lead.</b> Roles come from sign-in (company groups mapped to roles), never from what a client sends. Items marked <span class="pm d">In demo</span> run in the proof of concept today; the rest are proposals.</div>
+
+    <h3 class="bsub" style="margin-top:8px">Roles</h3>
+    <div class="legend">
+      <span><i class="sw human"></i>Decides or approves</span>
+      <span><i class="sw store"></i>Reads or operates</span>
+      <span><i class="sw auto"></i>System actor</span>
+      <span class="hint">Select a role for detail</span>
+    </div>
+    <div class="stage side">
+      <div class="diagram">
+        <div class="lane">
+          <p class="lane-h">Author and govern</p>
+          <div class="rgrid">
+            <button type="button" class="node human" data-id="r_author" aria-pressed="false"><span class="tag">In demo</span><span class="name">Knowledge Ops author</span><span class="sub">Maya · uploads, edits, approves operational content</span></button>
+            <button type="button" class="node human" data-id="r_legal" aria-pressed="false"><span class="tag">In demo</span><span class="name">Legal approver</span><span class="sub">David · legal and CMS wording, conflicts</span></button>
+            <button type="button" class="node human" data-id="r_owner" aria-pressed="false"><span class="tag">Proposed</span><span class="name">Knowledge base owner</span><span class="sub">Accountable for one knowledge base</span></button>
+            <button type="button" class="node human" data-id="r_clinical" aria-pressed="false"><span class="tag">Proposed · Phase 3</span><span class="name">Clinical reviewer</span><span class="sub">Clinical content gate</span></button>
+            <button type="button" class="node human" data-id="r_steward" aria-pressed="false"><span class="tag">Proposed</span><span class="name">Ontology steward</span><span class="sub">SMEs who approve ontology changes</span></button>
+          </div>
+        </div>
+        <p class="link">↓ approved units only</p>
+        <div class="lane">
+          <p class="lane-h">Consume</p>
+          <div class="rgrid">
+            <button type="button" class="node store" data-id="r_pharm" aria-pressed="false"><span class="tag">In demo</span><span class="name">Pharmacy advocate</span><span class="sub">Pharmacy and shared knowledge</span></button>
+            <button type="button" class="node store" data-id="r_ins" aria-pressed="false"><span class="tag">In demo</span><span class="name">Insurance advocate</span><span class="sub">Insurance and shared knowledge</span></button>
+            <button type="button" class="node store" data-id="r_out" aria-pressed="false"><span class="tag">In demo (policy)</span><span class="name">Outreach advocate</span><span class="sub">Pharmacy, insurance and shared</span></button>
+            <button type="button" class="node store" data-id="r_member" aria-pressed="false"><span class="tag">In demo (policy)</span><span class="name">Member chat</span><span class="sub">Member-facing units only</span></button>
+            <button type="button" class="node auto" data-id="r_channel" aria-pressed="false"><span class="tag">Proposed · Phase 3</span><span class="name">Channel services</span><span class="sub">Voice bot, web: service accounts</span></button>
+          </div>
+        </div>
+        <p class="link">↕ oversight</p>
+        <div class="lane">
+          <p class="lane-h">Operate and oversee</p>
+          <div class="rgrid">
+            <button type="button" class="node human" data-id="r_access" aria-pressed="false"><span class="tag">Proposed</span><span class="name">Access administrator</span><span class="sub">Grants roles access to knowledge bases</span></button>
+            <button type="button" class="node store" data-id="r_audit" aria-pressed="false"><span class="tag">Proposed</span><span class="name">Auditor</span><span class="sub">Compliance, read-only</span></button>
+            <button type="button" class="node store" data-id="r_eng" aria-pressed="false"><span class="tag">Proposed</span><span class="name">Platform engineer</span><span class="sub">Runs the service; no content decisions</span></button>
+            <button type="button" class="node auto" data-id="r_ai" aria-pressed="false"><span class="tag">In demo</span><span class="name">AI pipeline</span><span class="sub">Proposes; decides only mechanical steps</span></button>
+          </div>
+        </div>
+      </div>
+      <aside class="panel" aria-live="polite"></aside>
+    </div>
+
+    <h3 class="bsub">Read access: which roles can read which knowledge base</h3>
+    <div class="tablewrap"><table class="pmtab">
+      <tr><th>Role</th><th>Pharmacy</th><th>Insurance</th><th>Shared member service</th><th>Unit status visible</th><th>Status</th></tr>
+      <tr><td>Pharmacy advocate</td><td><span class="pm y">Yes</span></td><td><span class="pm n">—</span></td><td><span class="pm y">Yes</span></td><td>Published</td><td><span class="pm d">In demo</span></td></tr>
+      <tr><td>Insurance advocate</td><td><span class="pm n">—</span></td><td><span class="pm y">Yes</span></td><td><span class="pm y">Yes</span></td><td>Published</td><td><span class="pm d">In demo</span></td></tr>
+      <tr><td>Outreach advocate</td><td><span class="pm y">Yes</span></td><td><span class="pm y">Yes</span></td><td><span class="pm y">Yes</span></td><td>Published</td><td><span class="pm d">In demo (policy)</span></td></tr>
+      <tr><td>Member chat</td><td><span class="pm p">Member-facing only</span></td><td><span class="pm n">—</span></td><td><span class="pm p">Member-facing only</span></td><td>Published</td><td><span class="pm d">In demo (policy)</span></td></tr>
+      <tr><td>Channel services</td><td colspan="3">The knowledge bases granted to that channel's service account</td><td>Published</td><td>Proposed</td></tr>
+      <tr><td>Author, KB owner</td><td colspan="3">Their own knowledge bases, plus shared</td><td>All, including drafts and the queue</td><td>Proposed</td></tr>
+      <tr><td>Legal, clinical reviewer</td><td colspan="3">All knowledge bases</td><td>All, including drafts and the queue</td><td>Proposed</td></tr>
+      <tr><td>Auditor</td><td colspan="3">All knowledge bases, read-only</td><td>All, plus the audit trail</td><td>Proposed</td></tr>
+    </table></div>
+    <p class="note2">Filtering happens before retrieval: a unit outside the asker's knowledge bases can never come back in search. "Member-facing only" means units approved for the member channel; internal guidance such as escalation codes is excluded.</p>
+
+    <h3 class="bsub">Approval policy: who decides what</h3>
+    <div class="two-tables">
+      <div class="tablewrap"><table class="pmtab">
+        <tr><th>Compliance class of the unit</th><th>Approved by</th></tr>
+        <tr><td>Legal</td><td>Legal approver <span class="pm d">In demo</span></td></tr>
+        <tr><td>Regulatory (CMS)</td><td>Legal approver <span class="pm d">In demo</span></td></tr>
+        <tr><td>Clinical</td><td>Clinical reviewer (Phase 3)</td></tr>
+        <tr><td>Operational</td><td>Knowledge Ops author <span class="pm d">In demo</span></td></tr>
+      </table></div>
+      <div class="tablewrap"><table class="pmtab">
+        <tr><th>Finding at ingestion</th><th>Decided by</th></tr>
+        <tr><td>Exact duplicate</td><td>AI, automatically (linked, nothing new published)</td></tr>
+        <tr><td>Legal wording differs</td><td>Legal approver, always</td></tr>
+        <tr><td>Contradiction</td><td>Legal approver (proposed: KB owner when operational)</td></tr>
+        <tr><td>Stale</td><td>Legal approver; author drafts the fix</td></tr>
+        <tr><td>Variant, same meaning</td><td>Knowledge Ops author</td></tr>
+        <tr><td>New unit</td><td>Approver for its compliance class</td></tr>
+      </table></div>
+    </div>
+
+    <h3 class="bsub">Permission matrix</h3>
+    <div class="tablewrap"><table class="pmtab matrix">
+      <tr><th>Action</th><th>Author</th><th>KB owner</th><th>Legal</th><th>Clinical</th><th>Advocates and channels</th><th>Access admin</th><th>Auditor</th><th>Platform engineer</th><th>AI pipeline</th></tr>
+      <tr><td>Upload a document or revision</td><td><span class="pm y">Yes</span></td><td><span class="pm y">Yes</span></td><td><span class="pm n">—</span></td><td><span class="pm n">—</span></td><td><span class="pm n">—</span></td><td><span class="pm n">—</span></td><td><span class="pm n">—</span></td><td><span class="pm n">—</span></td><td><span class="pm n">—</span></td></tr>
+      <tr><td>Edit a draft unit</td><td><span class="pm y">Yes</span></td><td><span class="pm y">Yes</span></td><td><span class="pm p">Suggest</span></td><td><span class="pm p">Suggest</span></td><td><span class="pm n">—</span></td><td><span class="pm n">—</span></td><td><span class="pm n">—</span></td><td><span class="pm n">—</span></td><td><span class="pm p">Propose</span></td></tr>
+      <tr><td>Approve operational content</td><td><span class="pm p">Own KB</span></td><td><span class="pm y">Yes</span></td><td><span class="pm n">—</span></td><td><span class="pm n">—</span></td><td><span class="pm n">—</span></td><td><span class="pm n">—</span></td><td><span class="pm n">—</span></td><td><span class="pm n">—</span></td><td><span class="pm n">—</span></td></tr>
+      <tr><td>Approve legal or CMS wording</td><td><span class="pm n">—</span></td><td><span class="pm n">—</span></td><td><span class="pm y">Yes</span></td><td><span class="pm n">—</span></td><td><span class="pm n">—</span></td><td><span class="pm n">—</span></td><td><span class="pm n">—</span></td><td><span class="pm n">—</span></td><td><span class="pm n">—</span></td></tr>
+      <tr><td>Approve clinical content</td><td><span class="pm n">—</span></td><td><span class="pm n">—</span></td><td><span class="pm n">—</span></td><td><span class="pm y">Yes</span></td><td><span class="pm n">—</span></td><td><span class="pm n">—</span></td><td><span class="pm n">—</span></td><td><span class="pm n">—</span></td><td><span class="pm n">—</span></td></tr>
+      <tr><td>Resolve a conflict of authority</td><td><span class="pm n">—</span></td><td><span class="pm p">Operational</span></td><td><span class="pm y">Yes</span></td><td><span class="pm p">Clinical</span></td><td><span class="pm n">—</span></td><td><span class="pm n">—</span></td><td><span class="pm n">—</span></td><td><span class="pm n">—</span></td><td><span class="pm n">—</span></td></tr>
+      <tr><td>Link an exact duplicate</td><td><span class="pm n">—</span></td><td><span class="pm n">—</span></td><td><span class="pm n">—</span></td><td><span class="pm n">—</span></td><td><span class="pm n">—</span></td><td><span class="pm n">—</span></td><td><span class="pm n">—</span></td><td><span class="pm n">—</span></td><td><span class="pm y">Yes</span></td></tr>
+      <tr><td>Withdraw a published unit</td><td><span class="pm n">—</span></td><td><span class="pm y">Yes</span></td><td><span class="pm y">Yes</span></td><td><span class="pm y">Yes</span></td><td><span class="pm n">—</span></td><td><span class="pm n">—</span></td><td><span class="pm n">—</span></td><td><span class="pm n">—</span></td><td><span class="pm n">—</span></td></tr>
+      <tr><td>Search published units</td><td><span class="pm y">Yes</span></td><td><span class="pm y">Yes</span></td><td><span class="pm y">Yes</span></td><td><span class="pm y">Yes</span></td><td><span class="pm p">Scoped by role</span></td><td><span class="pm n">—</span></td><td><span class="pm y">Yes</span></td><td><span class="pm n">—</span></td><td><span class="pm n">—</span></td></tr>
+      <tr><td>See drafts and the review queue</td><td><span class="pm p">Own KB</span></td><td><span class="pm p">Own KB</span></td><td><span class="pm y">Yes</span></td><td><span class="pm y">Yes</span></td><td><span class="pm n">—</span></td><td><span class="pm n">—</span></td><td><span class="pm p">Read-only</span></td><td><span class="pm n">—</span></td><td><span class="pm n">—</span></td></tr>
+      <tr><td>Grant a role access to a knowledge base</td><td><span class="pm n">—</span></td><td><span class="pm p">Request</span></td><td><span class="pm n">—</span></td><td><span class="pm n">—</span></td><td><span class="pm n">—</span></td><td><span class="pm y">Yes</span></td><td><span class="pm n">—</span></td><td><span class="pm n">—</span></td><td><span class="pm n">—</span></td></tr>
+      <tr><td>Change the ontology</td><td><span class="pm p">Propose</span></td><td><span class="pm p">Propose</span></td><td><span class="pm p">Approve legal parts</span></td><td><span class="pm n">—</span></td><td><span class="pm n">—</span></td><td><span class="pm n">—</span></td><td><span class="pm n">—</span></td><td><span class="pm n">—</span></td><td><span class="pm p">Propose</span></td></tr>
+      <tr><td>Read the audit trail</td><td><span class="pm p">Own items</span></td><td><span class="pm p">Own KB</span></td><td><span class="pm y">Yes</span></td><td><span class="pm y">Yes</span></td><td><span class="pm n">—</span></td><td><span class="pm n">—</span></td><td><span class="pm y">Yes</span></td><td><span class="pm n">—</span></td><td><span class="pm n">—</span></td></tr>
+      <tr><td>Change service configuration</td><td><span class="pm n">—</span></td><td><span class="pm n">—</span></td><td><span class="pm n">—</span></td><td><span class="pm n">—</span></td><td><span class="pm n">—</span></td><td><span class="pm n">—</span></td><td><span class="pm n">—</span></td><td><span class="pm y">Yes</span></td><td><span class="pm n">—</span></td></tr>
+    </table></div>
+    <p class="note2"><span class="pm y">Yes</span> allowed · <span class="pm p">Qualified</span> allowed within the stated limit · <span class="pm n">—</span> not allowed.</p>
+
+    <h3 class="bsub">Policy rules</h3>
+    <div class="tablewrap"><table class="pmtab">
+      <tr><th>Rule</th><th>What it means</th><th>Status</th></tr>
+      <tr><td>Roles come from sign-in</td><td>The server reads the role from the sign-in token. A request can never claim a role.</td><td>Proposed (the demo passes roles in a cell)</td></tr>
+      <tr><td>Role check on every decision</td><td>A decision from the wrong role is refused, logged, and the item keeps waiting.</td><td><span class="pm d">In demo</span></td></tr>
+      <tr><td>AI never approves</td><td>The pipeline proposes; its only autonomous action is linking an exact duplicate.</td><td><span class="pm d">In demo</span></td></tr>
+      <tr><td>No self-approval for legal or clinical</td><td>The person who uploaded or edited a legal or clinical unit cannot also approve it.</td><td>Proposed</td></tr>
+      <tr><td>Separate access from content</td><td>The access administrator grants knowledge-base access but approves no content; approvers cannot grant themselves access.</td><td>Proposed</td></tr>
+      <tr><td>Only published units are served</td><td>Consumers never see drafts; superseded versions stay for the record but are filtered out.</td><td><span class="pm d">In demo</span></td></tr>
+      <tr><td>Verbatim is shown exactly</td><td>Channels must render legal verbatim word for word; no model may rewrite it.</td><td>Proposed (enforced in Phase 3 channels)</td></tr>
+      <tr><td>Withdraw at once</td><td>Legal or the KB owner can pull a published unit immediately; channels then show "under review".</td><td>Proposed</td></tr>
+      <tr><td>Everything is audited</td><td>Every decision, refused attempt, access grant and withdrawal is appended to the audit trail.</td><td><span class="pm d">In demo</span> (decisions)</td></tr>
+      <tr><td>Access is reviewed</td><td>Role memberships and knowledge-base grants are re-certified on a schedule set by Compliance.</td><td>Proposed</td></tr>
+    </table></div>
+  </section>
+
   <!-- ARTIFACTS -->
   <section class="sec tabpanel" id="artifacts" role="tabpanel" aria-labelledby="t-artifacts">
     <h2>What is in the demo, and why notebooks</h2>
@@ -925,6 +1060,21 @@ td code{font:500 12.5px var(--mono)}
     a_vec: e('opt', 'Option for the eng lead', 'Vectors', 'One way: pgvector inside the same Postgres, with two vectors per unit (wording for duplicates and drift, meaning for search).', [['Why one database', 'Publishing a unit and indexing it happen in one transaction, so the store and the search index cannot drift apart.'], ['The alternative', 'A separate vector database scales differently and adds a sync step to get right.'], ['Requirement behind it', 'Publish and searchable succeed together or not at all.']]),
     a_graph: e('opt', 'Option for the eng lead', 'LangGraph state', 'Paused reviews must survive restarts and can wait days.', [['One way', 'LangGraph\'s Postgres saver, with the graph running inside the API.'], ['The alternative', 'LangGraph\'s hosted platform, which adds its own operations and cost.'], ['In the demo', 'An in-memory saver, which resets on restart.']]),
     a_ci: e('req', 'Product requirement', 'Release gate', 'Quality is checked automatically before anything ships.', [['What runs', 'The golden set (right unit, correct citation, correct decline) and the planted-conflict cases, against the API.'], ['Fails the build when', 'A planted conflict is missed, or any legal item reaches publish without passing the human gate.'], ['PM owns', 'The golden set and its acceptance thresholds, agreed with Compliance.']]),
+
+    r_author: e('human', 'Role · in demo', 'Knowledge Ops author', 'Maya Ortiz. Writes and maintains knowledge for her knowledge bases.', [['Can', 'Upload documents and revisions; edit drafts; approve operational units, variants and merges in her own knowledge bases; see her queue.'], ['Cannot', 'Approve legal, CMS or clinical wording; grant access; approve her own legal edits.'], ['In the demo', 'Decides 12 author items; her attempt to approve Legal\'s pricing-disclaimer item is refused.']]),
+    r_legal: e('human', 'Role · in demo', 'Legal approver', 'David Reyes. Accountable for what members hear.', [['Can', 'Approve or reject legal and CMS wording, contradictions and stale content; resolve conflicts of authority; withdraw a published unit at once.'], ['Cannot', 'Grant access; approve a unit he authored or edited.'], ['In the demo', 'Decides 7 items: keeps the approved pricing disclaimer and closing, adopts the outreach recording disclosure as v2.']]),
+    r_owner: e('human', 'Role · proposed', 'Knowledge base owner', 'Accountable for one knowledge base (for example Pharmacy).', [['Can', 'Approve operational content and resolve operational conflicts in that knowledge base; withdraw units; request access grants for new roles.'], ['Why a separate role', 'Someone has to own each knowledge base\'s backlog, gap queue and review turnaround.']]),
+    r_clinical: e('human', 'Role · proposed · Phase 3', 'Clinical reviewer', 'The approval gate for clinical content when clinical domains are added.', [['Can', 'Approve clinical units; resolve clinical conflicts; withdraw clinical units.'], ['Why later', 'Phase 1 and 2 cover Pharmacy and Insurance content, which is legal and operational.']]),
+    r_steward: e('human', 'Role · proposed', 'Ontology steward', 'Subject-matter experts who own the ontology.', [['Can', 'Approve, merge, split or rename topics, classes, relation types and lexicon entries proposed by the AI or by authors.'], ['With Legal', 'Changes to unit types, compliance classes or approval rules also need Legal.']]),
+    r_pharm: e('store', 'Role · in demo', 'Pharmacy advocate', 'Answers member pharmacy questions on the advocate desktop.', [['Can read', 'Published units in the Pharmacy and shared member-service knowledge bases.'], ['In the demo', 'The two-role query returns the pricing disclaimer to this role.']]),
+    r_ins: e('store', 'Role · in demo', 'Insurance advocate', 'Answers billing, premium and enrollment questions.', [['Can read', 'Published units in the Insurance and shared member-service knowledge bases.'], ['In the demo', 'The pricing disclaimer is filtered out before retrieval, so it can never appear for this role.']]),
+    r_out: e('store', 'Role · in the demo\'s policy', 'Outreach advocate', 'Makes outbound education calls.', [['Can read', 'Pharmacy, Insurance and shared member-service knowledge.'], ['Note', 'Defined in the ontology\'s access policy; not exercised in the demo run.']]),
+    r_member: e('store', 'Role · in the demo\'s policy', 'Member chat', 'The member-facing chat channel.', [['Can read', 'Published units approved for the member channel, from Pharmacy and shared knowledge. Internal guidance (escalation codes, disposition codes) is excluded.'], ['Proposed refinement', 'Add a "member-facing" flag to units so the filter is explicit.']]),
+    r_channel: e('auto', 'Role · proposed · Phase 3', 'Channel services', 'Voice bot, web and other systems calling the API.', [['How', 'Each channel has its own service account with the knowledge bases granted to it.'], ['Must', 'Render verbatim exactly and show the citation or "under review".']]),
+    r_access: e('human', 'Role · proposed', 'Access administrator', 'Grants roles access to knowledge bases.', [['Can', 'Grant or revoke knowledge-base access for a role, on a KB owner\'s request.'], ['Cannot', 'Approve or edit content.'], ['Why separate', 'Keeps "who may see it" apart from "what it says".']]),
+    r_audit: e('store', 'Role · proposed', 'Auditor', 'Compliance staff who check the record.', [['Can', 'Read every knowledge base, the review queue and the full audit trail, read-only.'], ['Uses', 'Trace any answer back to its unit, source section, approver and timestamp.']]),
+    r_eng: e('store', 'Role · proposed', 'Platform engineer', 'Runs and maintains the service.', [['Can', 'Deploy, configure and monitor the service.'], ['Cannot', 'Approve, edit or withdraw content, or grant knowledge-base access.']]),
+    r_ai: e('auto', 'System actor · in demo', 'AI pipeline', 'Extracts, tags, compares and proposes.', [['Decides alone', 'Unit boundaries, unit type, exact-duplicate links, drift and staleness flags.'], ['Never', 'Approves, publishes, resolves legal wording or grants access.']]),
     // journey: today
     j1: e('pain', 'Today · step 1', 'Change arrives by email', 'Legal revises the Rx pricing disclaimer and sends a redline.', [['Pain', 'The change goes to people, not to the content. Nothing records which scripts, articles or bots carry that wording.'], ['Who feels it', 'Maya, who now has to work out the blast radius by hand.']]),
     j2: e('pain', 'Today · step 2', 'Search by memory', 'Maya keyword-searches and relies on what she remembers.', [['Pain', 'Near-copies with slightly different wording do not match the search, so they are missed.'], ['Risk', 'The copy nobody knew about keeps the old wording live.']]),
